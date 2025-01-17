@@ -14,7 +14,7 @@ const MarketingPage = () => {
 
             <p className='poppins-regular max-w-3xl text-center text-lg text-muted-foreground sm:text-xl'>Unleash the potential of streamlined workflows and intelligent task recommendations for effortless project management.</p>
 
-            <CtaButton text="Get Started" link="/register" />
+            <CtaButton text="Get Started" link="/signup" />
           </div>
         </div>
     </main>
