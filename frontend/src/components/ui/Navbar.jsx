@@ -8,7 +8,7 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 
 const Navbar = () => {
   return (
-    <div className='fixed top-0 w-full h-14 flex items-center p-4 py-2 border-b-2 border-secondary shadow-sm'>
+    <nav className='fixed top-0 w-full h-14 flex items-center p-4 py-2 border-b-2 border-secondary shadow-sm'>
       <div className='mx-auto flex items-center justify-between w-full max-w-screen-2xl'>
         <Logo />
         <div id="nav-links" className='flex items-center justify-center gap-4 md:justify-end w-full'>
@@ -28,16 +28,16 @@ const Navbar = () => {
                   }
                 }}
               >
-                <UserButton.MenuItems>
+                {/* <UserButton.MenuItems>
                   <UserButton.Link label='Your Boards' />
-                </UserButton.MenuItems>
+                </UserButton.MenuItems> */}
               </UserButton>
             </SignedIn>
           </Button>
         </div>
       </div>
 
-    </div>
+    </nav>
   )
 }
 

@@ -3,7 +3,7 @@ import React from 'react'
 
 const SignUpPage = () => {
   return (
-    <div className='flex items-center justify-center w-full'>
+    <div className='mt-10 flex items-center justify-center w-full'>
         <SignUp fallbackRedirectUrl='/' signInUrl='/login' />
     </div>
   )

@@ -12,7 +12,7 @@ const LoginPage = () => {
     }, [theme]);
 
   return (
-    <div className="flex flex-1 items-center justify-center w-full">
+    <div className="mt-10 flex flex-1 items-center justify-center w-full">
       <SignIn
         fallbackRedirectUrl="/"
         signUpUrl="/signup"

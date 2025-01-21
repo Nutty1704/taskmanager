@@ -13,13 +13,13 @@ const getCssVariable = (variableName) => {
 export const getTheme = () => {
   return (
     {
-      colorPrimary: getCssVariable('--primary'),
+      colorPrimary: getCssVariable('--foreground'),
       colorBackground: getCssVariable('--background'),
       colorText: getCssVariable('--foreground'),
       colorInputBackground: getCssVariable('--input'),
       colorInputText: getCssVariable('--foreground'),
-      colorButtonText: getCssVariable('--primary-foreground'),
-      colorButtonBackground: getCssVariable('--primary'),
+      colorButtonText: getCssVariable('-foreground'),
+      colorButtonBackground: getCssVariable('--background'),
     }
   )
 }
