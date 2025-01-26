@@ -3,7 +3,53 @@
 @tailwind utilities;
 
 
-@layer base {
+:root  {
+  --background: 45 0% 95%;
+  --foreground: 45 0% 10%;
+  --card: 45 0% 90%;
+  --card-foreground: 45 0% 15%;
+  --popover: 45 0% 95%;
+  --popover-foreground: 45 95% 10%;
+  --primary: 45 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 45 10% 87%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 7 10% 87%;
+  --muted-foreground: 45 0% 40%;
+  --accent: 7 10% 87%;
+  --accent-foreground: 45 0% 15%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 45 0% 90%;
+  --border: 45 20% 82%;
+  --input: 45 20% 50%;
+  --ring: 45 100% 50%;
+  --radius: 0.5rem;
+}
+.dark  {
+  --background: 45 10% 10%;
+  --foreground: 45 0% 90%;
+  --card: 45 0% 10%;
+  --card-foreground: 45 0% 90%;
+  --popover: 45 10% 5%;
+  --popover-foreground: 45 0% 90%;
+  --primary: 45 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 45 10% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 7 10% 25%;
+  --muted-foreground: 45 0% 65%;
+  --accent: 7 10% 25%;
+  --accent-foreground: 45 0% 90%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 45 0% 90%;
+  --border: 45 20% 50%;
+  --input: 45 20% 50%;
+  --ring: 45 100% 50%;
+  --radius: 0.5rem;
+}
+
+
+/* @layer base {
   :root {
     --background: 41 33% 100%;
     --foreground: 41 73% 3%;
@@ -58,7 +104,7 @@
     --chart-4: 41 18% 18%;
     --chart-5: 41 98% 57%;
   }
-}
+} */
 
 @layer base {
   * {
@@ -71,6 +117,9 @@
 }
 
 
+.bg-logo-gradient {
+  @apply bg-gradient-to-tr from-[#f89937] to-[#fbd91f]
+}
 
 .cl-formButtonPrimary {
   @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3  font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;

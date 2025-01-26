@@ -47,7 +47,6 @@ const Sidebar = ({ stateKey = 'org-sidebar-state' }) => {
     };
 
     if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
-        console.log("Rendering SidebarSkeleton")
         return (
             <SidebarSkeleton />
         )

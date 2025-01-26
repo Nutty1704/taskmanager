@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../components/ui/Sidebar'
 import { useParams } from 'react-router-dom'
 import SettingsPage from './SettingsPage';
+import BoardsPage from './BoardsPage';
 
 const OrganizationPage = () => {
   const { orgId, page } = useParams();
@@ -10,7 +11,7 @@ const OrganizationPage = () => {
   const getPage = () => {
     switch (page) {
       case undefined:
-        return 'Organization Page'
+        return <BoardsPage />
       case 'settings':
         return <SettingsPage />
       default:

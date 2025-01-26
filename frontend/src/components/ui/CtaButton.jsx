@@ -9,7 +9,7 @@ const CtaButton = ({ text, link }) => {
             <Button
                 size="lg"
                 asChild={false}
-                className="flex flex-row cursor-pointer sm:h-14 sm:text-base sm:px-10 gap-2 bg-gradient-to-br from-accent to-primary via-primary via-60% hover:scale-95 hover:opacity-90 transition-transform group w-full text-secondary rounded-md" 
+                className="flex flex-row cursor-pointer sm:h-14 sm:text-base sm:px-10 gap-2 bg-logo-gradient hover:scale-95 hover:opacity-90 transition-transform group w-full text-neutral-800 rounded-md" 
             >
                 {text}
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
