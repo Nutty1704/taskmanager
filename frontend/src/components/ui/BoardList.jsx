@@ -13,34 +13,16 @@ const BoardList = () => {
   const [ loading, setLoading ] = useState(true);
 
   useEffect(() => {
-    let intervalId;
-
     const fetchBoards = async () => {
-      const { success, boards } = await getBoards();
-      if (success) {
-        setBoards(boards);
-        clearInterval(intervalId);
-        setLoading(false);
-      }
-    };
-
-    const fetchWithRetry = async () => {
       setLoading(true);
       const { success, boards } = await getBoards();
       if (success) {
         setBoards(boards);
-        setLoading(false);
-      } else {
-        intervalId = setInterval(fetchBoards, 2000);
       }
+      setLoading(false);
     };
 
-    fetchWithRetry();
-
-    // Cleanup the interval on component unmount if it's still running
-    return () => {
-      clearInterval(intervalId);
-    };
+    fetchBoards();
   }, [token]);
 
   if (loading) {
@@ -68,6 +50,7 @@ const BoardList = () => {
             </p>
           </Link>
         ))}
+
         <BoardFormPopover side='right' sideOffset={10}>
           <div
             role='button'

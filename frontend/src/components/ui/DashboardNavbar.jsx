@@ -6,9 +6,9 @@ import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react'
 import MobileSidebar from './MobileSidebar'
 import BoardFormPopover from '../form/create-board-form-popover'
 
-const DashboardNavbar = () => {
+const DashboardNavbar = ({ className = ''}) => {
   return (
-    <nav className='fixed z-50 top-0 px-4 w-full h-12 border-b shadow-sm bg-background'>
+    <nav className={`fixed z-50 top-0 px-4 w-full h-12 border-b shadow-sm bg-background ${className}` }>
       <div className='flex justify-between h-full'>
         <div className="h-full flex items-center gap-x-4">
           <div className='hidden md:flex'>
@@ -21,7 +21,7 @@ const DashboardNavbar = () => {
             </Button>
           </BoardFormPopover>
           <BoardFormPopover>
-            <Button size='sm' className='my-auto block md:hidden'>
+            <Button size='sm' className='my-auto block md:hidden bg-foreground'>
               <Plus size={24} className='rounded-sm text-background bg-foreground' />
             </Button>
           </BoardFormPopover>

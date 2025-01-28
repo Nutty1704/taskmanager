@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import MarketingPage from './pages/MarketingPage'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
@@ -13,18 +13,23 @@ import DashboardLayout from './layouts/DashboardLayout'
 import NotLoggedInLayout from './layouts/NotLoggedInLayout'
 import { Toaster } from 'react-hot-toast'
 
-import { useSession } from '@clerk/clerk-react';
+import { useAuth, useSession } from '@clerk/clerk-react';
 import useAuthStore from './stores/useAuthStore'
+import BoardLayout from './layouts/BoardLayout'
+import BoardPage from './pages/BoardPage'
 
 const App = () => {
   const { session } = useSession();
-  const setToken = useAuthStore((state) => state.setToken);
+  const { token, setToken } = useAuthStore();
+  const { userId, orgId } = useAuth();
 
   useEffect(() => {
     const fetchAndSetToken = async () => {
       if (session) {
-        const token = await session.getToken();
-        setToken(token);
+        const sessionToken = await session.getToken();
+        if (sessionToken === token) return;
+
+        setToken(sessionToken);
       }
     };
 
@@ -32,7 +37,7 @@ const App = () => {
   }, [session, setToken]);
 
   return (
-    <div>
+    <>
       <Toaster
         position='bottom-right'
         reverseOrder={false}
@@ -46,26 +51,45 @@ const App = () => {
 
 
       <Routes>
+
         <Route path='/' element={
-          <NotLoggedInLayout>
-            <MarketingPage />
-          </NotLoggedInLayout>
+          userId
+            ? orgId
+              ? <Navigate to={`/organization/${orgId}`} />
+              : <Navigate to={`/select-org`} />
+            : (
+              <NotLoggedInLayout>
+                <MarketingPage />
+              </NotLoggedInLayout>
+            )
         } />
+
         <Route path='/login' element={
-          <NotLoggedInLayout>
-            <LoginPage />
-          </NotLoggedInLayout>
+          userId
+            ? <Navigate to='/' />
+            : (
+              <NotLoggedInLayout>
+                <LoginPage />
+              </NotLoggedInLayout>
+            )
         } />
+
         <Route path='/signup' element={
-          <NotLoggedInLayout>
-            <SignUpPage />
-          </NotLoggedInLayout>
+          userId
+            ? <Navigate to='/' />
+            : (
+              <NotLoggedInLayout>
+                <SignUpPage />
+              </NotLoggedInLayout>
+            )
         } />
+
         <Route path='/select-org' element={
           <ProtectedRoute>
             <SelectOrgPage />
           </ProtectedRoute>
         } />
+
         <Route path='/organization/:orgId/:page?' element={
           <ProtectedRoute>
             <DashboardLayout>
@@ -73,8 +97,17 @@ const App = () => {
             </DashboardLayout>
           </ProtectedRoute>
         } />
+
+        <Route path='/board/:boardId' element={
+          <ProtectedRoute>
+            <BoardLayout>
+              <BoardPage />
+            </BoardLayout>
+          </ProtectedRoute>
+        } />
+        
       </Routes>
-    </div>
+    </>
   )
 }
 

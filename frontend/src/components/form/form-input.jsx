@@ -6,7 +6,7 @@ import FormErrors from './form-errors';
 
 
 const FormInput = React.forwardRef(({
-        id,
+    id,
     label = '',
     type = 'text',
     placeholder = '',
