@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import List from "./list.model.js";
 
 
 const boardSchema = new mongoose.Schema({
@@ -29,9 +30,25 @@ const boardSchema = new mongoose.Schema({
     imageLinkHTML: {
         type: String,
         required: true
-    }
+    },
+    lists: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "List"
+        }
+    ]
 }, { timestamps: true });
 
+
+// cascade delete lists when a board is deleted
+boardSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+    try {
+        await List.deleteMany({ board_id: this._id });
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 const Board = mongoose.model("Board", boardSchema);
 

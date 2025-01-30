@@ -1,6 +1,10 @@
 import express from 'express'
 
-import { createBoard, deleteBoard, getBoards, getBoard, updateBoard } from '../controllers/board.controller.js'
+import {
+    createBoard, deleteBoard,
+    getBoards, getBoard,
+    updateBoard
+} from '../controllers/board.controller.js'
 
 
 const router = express.Router();
