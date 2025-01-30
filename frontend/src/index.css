@@ -360,3 +360,7 @@ h1[data-localization-key='userProfile.navbar.title'] {
 .cl-organizationSwitcherPopoverActionButtonIcon {
   fill: var(--muted-foreground);
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

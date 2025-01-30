@@ -1,27 +1,33 @@
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import React from 'react'
-import { deleteBoard } from '@/src/lib/api/board'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { deleteList } from '@/src/lib/api/list'
+import { useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import FormInput from './form-input'
+import FormInput from '../form/form-input'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getConfirmationSchema } from '@/src/lib/form-validators'
-import FormSubmit from './form-submit'
+import FormSubmit from '../form/form-submit'
+import useListStore from '@/src/stores/useListStore'
 
 
-const DeleteBoardConfirmationModal = ({
+const ListDeleteForm = ({
     children,
     title,
-    id
+    id,
+    ...props
 }) => {
-    const navigate = useNavigate();
+    const { boardId } = useParams();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(getConfirmationSchema(title)),
         defaultValues: {
             confirmation: '',
         }
     });
+
+    const [ isOpen, setIsOpen ] = useState(false);
+
+    const { removeList } = useListStore();
 
     const onOpenChange = (open) => {
         if (!open) {
@@ -31,26 +37,36 @@ const DeleteBoardConfirmationModal = ({
 
     const onDelete = async (data) => {
         try {
-            const { success } = await deleteBoard(id);
+            const { success } = await deleteList(boardId, id);
 
             if (!success) {
-                toast.error('Error deleting board');
+                toast.error('Error deleting List');
                 return;
             }
 
-            navigate('/');
-            toast.success('Board deleted successfully');
+            removeList(id);
+            toast.success(`List "${title}" deleted`);
+            setIsOpen(false);
+
+            if (props.onSuccess) {
+                props.onSuccess();
+            }
+
         } catch (error) {
-            console.error('Error deleting board: ', error.response?.data || error.message);
-            toast.error('Error deleting board');
+            console.error('Error deleting list: ', error.response?.data || error.message);
+            toast.error('Error deleting list');
         }
     };
 
   return (
     <Dialog
+      open={isOpen}
       onOpenChange={open => onOpenChange(open)}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger
+        asChild
+        onClick={() => setIsOpen(true)}
+    >
         {children}
       </DialogTrigger>
       <DialogContent>
@@ -78,4 +94,4 @@ const DeleteBoardConfirmationModal = ({
   )
 }
 
-export default DeleteBoardConfirmationModal
+export default ListDeleteForm;

@@ -69,7 +69,7 @@ export const updateBoard = async (data) => {
 }
 
 
-export const deletBoard = async (id) => {
+export const deleteBoard = async (id) => {
     try {
         const response = await apiClient.post('/api/board/delete', { id });
 

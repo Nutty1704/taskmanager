@@ -30,6 +30,11 @@ const BoardTitleForm = ({ board, setBoard }) => {
 
         const title = inputRef.current.value.trim();
 
+        if (title === board.title) {
+            disableEditing();
+            return;
+        }
+
         const { success, updatedBoard } = await updateBoard({ id: board._id, title });
 
         if (!success) {
