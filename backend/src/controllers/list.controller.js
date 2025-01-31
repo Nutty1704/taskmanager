@@ -92,9 +92,9 @@ export const deleteList = async (req, res, next) => {
             throw new InvalidDataError("List id is required");
         }
 
-        await safeGetList(orgId, boardId, id);
+        const list = await safeGetList(orgId, boardId, id);
 
-        await List.findByIdAndDelete(id);
+        await list.deleteOne();
 
         res.status(200).json({ success: true });
         
@@ -114,7 +114,7 @@ export const copyList = async (req, res, next) => {
         const highestPosition = await getHighestOrderList(boardId);
 
         const newList = new List({
-            title: list.title,
+            title: list.title + ' Copy',
             board_id: boardId,
             position: highestPosition + 1
         });
@@ -137,7 +137,38 @@ export const copyList = async (req, res, next) => {
 
         await newList.save();
 
+        await newList.populate({
+            path: 'cards',
+            options: {
+                sort: { position: 1 }
+            }
+        });
+
         res.status(201).json({ success: true, data: newList });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const updateListPositions = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId } = req.params;
+        const { lists } = req.body;
+
+        if (!lists || !Array.isArray(lists)) {
+            throw new InvalidDataError("Invalid data");
+        }
+
+        await verifyOrgForBoard(orgId, boardId);
+
+        for (const list of lists) {
+            await List.findOneAndUpdate({ _id: list._id, board_id: boardId }, { position: list.position });
+        }
+
+        res.status(200).json({ success: true });
 
     } catch (error) {
         next(error);

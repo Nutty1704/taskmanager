@@ -32,7 +32,18 @@ listSchema.pre('deleteOne', { document: true, query: false }, async function (ne
     } catch (error) {
         next(error);
     }
-})
+});
+
+listSchema.pre('deleteMany', async function (next) {
+    try {
+        const lists = await this.model.find(this.getQuery()); // Get all lists being deleted
+        const listIds = lists.map(list => list._id);
+        await Card.deleteMany({ listId: { $in: listIds } });
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 const List = mongoose.model("List", listSchema);

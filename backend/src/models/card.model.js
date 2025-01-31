@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        default: ''
     },
     list_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +20,17 @@ const cardSchema = new mongoose.Schema({
         required: true
     }
 }, { timestamps: true });
+
+
+cardSchema.virtual('list',{
+    ref: 'List',
+    localField: 'list_id',
+    foreignField: '_id',
+    justOne: true
+});
+
+cardSchema.get('toObject', { virtuals: true });
+cardSchema.get('toJSON', { virtuals: true });
 
 
 const Card = mongoose.model("Card", cardSchema);
