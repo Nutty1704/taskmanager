@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ListOptions from './ListOptions';
 
-const ListHeader = ({ data }) => {
+const ListHeader = ({ data, onAddCard }) => {
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef(null);
 
@@ -111,7 +111,7 @@ const ListHeader = ({ data }) => {
 
             <ListOptions
                 data={data}
-                onAddCard={() => {}}
+                onAddCard={onAddCard}
             />
         </div>
     )

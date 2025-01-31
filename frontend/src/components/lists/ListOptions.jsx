@@ -39,6 +39,11 @@ const ListOptions = ({
         }
     }
 
+    const onAddClick = () => {
+        onAddCard();
+        onSuccess();
+    }
+
     const onSuccess = () => {
         closeRef.current.click();
     }
@@ -72,7 +77,7 @@ const ListOptions = ({
                 </PopoverClose>
 
                 <Button
-                    onClick={onAddCard}
+                    onClick={onAddClick}
                     className='rounded-none w-full h-auto p-2 px-5 justify-start text-sm'
                     variant='ghost'
                 >

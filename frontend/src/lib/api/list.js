@@ -89,3 +89,22 @@ export const copyList = async (boardId, id) => {
         return { success: false, newList: null };
     }
 }
+
+
+export const updateListPositions = async (boardId, lists) => {
+    try {
+        const items = lists.map(l => ({ _id: l._id, position: l.position }));
+        
+        const response = await apiClient.post(`/api/list/${boardId}/positions`, { lists: items });
+
+        if (response.data.success) {
+            return { success: true };
+        }
+
+        return { success: false };
+
+    } catch (error) {
+        console.error('Error updating list positions: ', error.response?.data || error.message);
+        return { success: false };
+    }
+}

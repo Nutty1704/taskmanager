@@ -1,3 +1,4 @@
+import { Description } from '@radix-ui/react-dialog';
 import { z } from 'zod';
 
 
@@ -27,4 +28,18 @@ export const listSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters").max(255),
     boardId: z.string(),
     id: z.string(),
+});
+
+
+export const cardSchema = z.object({
+    title: z.string({
+        required_error: "Title is required",
+        invalid_type_error: "Title is required",
+    }).min(3, "Title must be at least 3 characters"),
+    listId: z.string(),
+    boardId: z.string(),
+    description: z.string({
+        required_error: "Description is required",
+        invalid_type_error: "Description is required",
+    }).min(3, "Description is too short"),
 });

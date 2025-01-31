@@ -23,24 +23,49 @@ const App = () => {
   const { token, setToken } = useAuthStore();
   const { userId, orgId } = useAuth();
 
+
+  const fetchAndSetToken = async () => {
+    if (session) {
+      const sessionToken = await session.getToken();
+      if (sessionToken === token) return;
+
+      setToken(sessionToken);
+    }
+  }
+
   useEffect(() => {
-    const fetchAndSetToken = async () => {
-      if (session) {
-        const sessionToken = await session.getToken();
-        if (sessionToken === token) return;
+    // Update token every 10 seconds
+    setTimeout(() => {
+      fetchAndSetToken();
+    }, 10000);
+  }, []);
 
-        setToken(sessionToken);
-      }
-    };
-
+  useEffect(() => {
     fetchAndSetToken();
-  }, [session, setToken]);
+  }, [session]);
 
   return (
     <>
       <Toaster
         position='bottom-right'
         reverseOrder={false}
+        gutter={3}
+        toastOptions={{
+          duration: 3000,
+          className: "p-4 rounded-lg shadow-lg text-sm border bg-background text-foreground poppins-regular",
+          success: {
+            iconTheme: {
+              primary: "hsl(var(--success))",
+              secondary: "hsl(var(--background))",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "hsl(var(--destructive))",
+              secondary: "hsl(var(--background))",
+            },
+          },
+        }}
       />
 
       <Helmet>

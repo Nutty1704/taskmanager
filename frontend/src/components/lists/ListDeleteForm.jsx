@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import React, { useState } from 'react'
+import React  from 'react'
 import { deleteList } from '@/src/lib/api/list'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FormInput from '../form/form-input'
 import { useForm } from 'react-hook-form'
@@ -25,15 +25,7 @@ const ListDeleteForm = ({
         }
     });
 
-    const [ isOpen, setIsOpen ] = useState(false);
-
     const { removeList } = useListStore();
-
-    const onOpenChange = (open) => {
-        if (!open) {
-            reset();
-        }
-    }
 
     const onDelete = async (data) => {
         try {
@@ -46,7 +38,6 @@ const ListDeleteForm = ({
 
             removeList(id);
             toast.success(`List "${title}" deleted`);
-            setIsOpen(false);
 
             if (props.onSuccess) {
                 props.onSuccess();
@@ -59,18 +50,13 @@ const ListDeleteForm = ({
     };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={open => onOpenChange(open)}
-    >
-      <DialogTrigger
-        asChild
-        onClick={() => setIsOpen(true)}
-    >
+    <Dialog>
+      <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Are you sure?</DialogTitle>
+
         <form onSubmit={handleSubmit(onDelete)}>
             <FormInput
                 id='confirmation'
