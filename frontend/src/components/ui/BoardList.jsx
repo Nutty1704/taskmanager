@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import BoardFormPopover from '../form/create-board-form-popover'
 import useBoardStore from '@/src/stores/useBoardStore'
 import { getBoards } from '@/src/lib/api/board'
-import { Link, useParams } from 'react-router-dom'
-import useAuthStore from '@/src/stores/useAuthStore'
+import { Link } from 'react-router-dom'
 import BoardListSkeleton from '../skeletons/BoardListSkeleton'
+import useAuthStore from '@/src/stores/useAuthStore'
 
 const BoardList = () => {
   const { boards, setBoards } = useBoardStore();
@@ -15,6 +15,7 @@ const BoardList = () => {
   useEffect(() => {
     const fetchBoards = async () => {
       setLoading(true);
+
       const { success, boards } = await getBoards();
       if (success) {
         setBoards(boards);

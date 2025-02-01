@@ -19,29 +19,41 @@ import BoardLayout from './layouts/BoardLayout'
 import BoardPage from './pages/BoardPage'
 
 const App = () => {
-  const { session } = useSession();
+  const { getToken } = useAuth();
   const { token, setToken } = useAuthStore();
   const { userId, orgId } = useAuth();
+  const { session } = useSession();
 
 
   const fetchAndSetToken = async () => {
-    if (session) {
-      const sessionToken = await session.getToken();
-      if (sessionToken === token) return;
-
-      setToken(sessionToken);
-    }
+    const token = await getToken();
+    setToken(token);
   }
 
-  useEffect(() => {
-    // Update token every 10 seconds
-    setTimeout(() => {
+  useEffect(() => { 
+
+    fetchAndSetToken();
+
+    // Update token every 20 seconds
+    const interval = setInterval(() => {
       fetchAndSetToken();
-    }, 10000);
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
+
   useEffect(() => {
-    fetchAndSetToken();
+    const updateToken = async () => {
+      if (session) {
+        const sessionToken = await session.getToken();
+        if (sessionToken !== token) {
+          setToken(sessionToken);
+        }
+      }
+    }
+
+    updateToken();
   }, [session]);
 
   return (
