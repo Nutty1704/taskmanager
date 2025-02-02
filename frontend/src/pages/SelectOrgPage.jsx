@@ -15,20 +15,21 @@ export default function CreateOrganizationPage() {
     return (
         <>
             <Navbar />
-            <div className="mt-10 flex flex-1 items-center justify-center w-full">
-                <OrganizationList
-                    hidePersonal
-                    afterCreateOrganizationUrl={(organization) => `/organization/${organization.id}`}
-                    afterSelectOrganizationUrl={(organization) => `/organization/${organization.id}`}
-                    appearance={{
-                        variables: variables,
-                        elements: {
-                            button: 'text-muted-foreground hover:text-foreground',
-                            userPreviewMainIdentifier: 'text-muted-foreground hover:text-foreground',
-
-                        }
-                    }}
-                />
+            <div className="relative w-full">
+                <div className="absolute top-32 left-0 w-full flex justify-center">
+                    <OrganizationList
+                        hidePersonal
+                        afterCreateOrganizationUrl={(organization) => `/organization/${organization.id}`}
+                        afterSelectOrganizationUrl={(organization) => `/organization/${organization.id}`}
+                        appearance={{
+                            variables: variables,
+                            elements: {
+                                button: 'text-muted-foreground hover:text-foreground',
+                                userPreviewMainIdentifier: 'text-muted-foreground hover:text-foreground',
+                            }
+                        }}
+                    />
+                </div>
             </div>
         </>
     )
