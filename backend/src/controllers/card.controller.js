@@ -106,13 +106,65 @@ export const updateCard = async (req, res, next) => {
 
         if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
 
-        card.title = title;
-        card.description = description;
+        if (title) card.title = title;
+        if (description) card.description = description;
 
         await card.save();
 
         res.status(200).json({ success: true });
 
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const copyCard = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId, listId, cardId } = req.body;
+
+        await verifyCardPermission(orgId, boardId, listId);
+
+        const card = await Card.findById(cardId);
+
+        if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
+
+        const newPosition = await getHighestOrderCard(listId) + 1;
+
+        const newCard = new Card({
+            list_id: listId,
+            title: card.title + ' Copy',
+            description: card.description,
+            position: newPosition
+        });
+
+        await newCard.save();
+
+        await List.findByIdAndUpdate(listId, { $push: { cards: newCard._id } });
+
+        res.status(201).json({ success: true, data: newCard });
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const deleteCard = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId, listId, cardId } = req.body;
+
+        await verifyCardPermission(orgId, boardId, listId);
+
+        const card = await Card.findById(cardId);
+
+        if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
+
+        await List.findByIdAndUpdate(listId, { $pull: { cards: cardId } });
+        await card.deleteOne();
+
+        res.status(200).json({ success: true });
     } catch (error) {
         next(error)
     }
