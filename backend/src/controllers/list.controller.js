@@ -1,6 +1,6 @@
 import List from '../models/list.model.js';
 import Card from '../models/card.model.js';
-import { getHighestOrderList, safeGetList, verifyOrgForBoard } from '../lib/db-util.js';
+import { createAuditLog, getHighestOrderList, safeGetList, verifyOrgForBoard } from '../lib/db-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
 
 export const getBoardLists = async (req, res, next) => {
@@ -29,7 +29,7 @@ export const getBoardLists = async (req, res, next) => {
 
 export const createList = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId } = req.params;
 
         const { title } = req.body;
@@ -50,6 +50,8 @@ export const createList = async (req, res, next) => {
 
         await list.save();
 
+        await createAuditLog("list", "create", list._id, list.title, orgId, userId);
+
         res.status(201).json({ success: true, data: list });
 
     } catch (error) {
@@ -60,7 +62,7 @@ export const createList = async (req, res, next) => {
 
 export const updateList = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId } = req.params;
         const { id, title } = req.body;
 
@@ -74,6 +76,8 @@ export const updateList = async (req, res, next) => {
 
         await list.save();
 
+        await createAuditLog("list", "update", list._id, list.title, orgId, userId);
+
         res.status(200).json({ success: true, data: list });
 
     } catch (error) {
@@ -84,7 +88,7 @@ export const updateList = async (req, res, next) => {
 
 export const deleteList = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId } = req.params;
         const { id } = req.body;
 
@@ -96,6 +100,8 @@ export const deleteList = async (req, res, next) => {
 
         await list.deleteOne();
 
+        await createAuditLog("list", "delete", list._id, list.title, orgId, userId);
+
         res.status(200).json({ success: true });
         
     } catch (error) {
@@ -106,7 +112,7 @@ export const deleteList = async (req, res, next) => {
 
 export const copyList = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId } = req.params;
         const { id } = req.body;
 
@@ -132,6 +138,8 @@ export const copyList = async (req, res, next) => {
 
             await newCard.save();
 
+            await createAuditLog("card", "create", newCard._id, newCard.title, orgId, userId);
+
             newList.cards.push(newCard._id);
         }
 
@@ -143,6 +151,8 @@ export const copyList = async (req, res, next) => {
                 sort: { position: 1 }
             }
         });
+
+        await createAuditLog("list", "create", newList._id, newList.title, orgId, userId);
 
         res.status(201).json({ success: true, data: newList });
 

@@ -1,5 +1,6 @@
 import Board from '../models/board.model.js'
 import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
+import { createAuditLog } from '../lib/db-util.js';
 
 export const createBoard = async (req, res, next) => {
     try {
@@ -12,7 +13,7 @@ export const createBoard = async (req, res, next) => {
             imageUserName
         } = req.body;
 
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
 
         if (!title || !imageId || !imageThumbUrl || !imageFullUrl || !imageLinkHTML || !imageUserName) {
             throw new InvalidDataError("All fields are required");
@@ -30,6 +31,8 @@ export const createBoard = async (req, res, next) => {
 
         await newBoard.save();
 
+        await createAuditLog("board", "create", newBoard._id, newBoard.title, orgId, userId);
+
         res.status(201).json({ success: true, data: newBoard });
 
     } catch (error) {
@@ -41,7 +44,7 @@ export const createBoard = async (req, res, next) => {
 export const deleteBoard = async (req, res, next) => {
     try {
         const { id } = req.body;
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
 
         if (!id) {
             throw new InvalidDataError("Board id is required");
@@ -58,6 +61,8 @@ export const deleteBoard = async (req, res, next) => {
         }
 
         await Board.findByIdAndDelete(id);
+
+        await createAuditLog("board", "delete", board._id, board.title, orgId, userId);
 
         res.status(200).json({ success: true, message: "Board deleted successfully" });
 
@@ -102,7 +107,7 @@ export const getBoard = async (req, res, next) => {
 export const updateBoard = async (req, res, next) => {
     try {
         const { id, title } = req.body;
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
 
         if (!id || !title) {
             throw new InvalidDataError("Board id and title are required");
@@ -121,6 +126,8 @@ export const updateBoard = async (req, res, next) => {
         board.title = title;
 
         await board.save();
+
+        await createAuditLog("board", "update", board._id, board.title, orgId, userId);
 
         res.status(200).json({ success: true, data: board });
     } catch (error) {

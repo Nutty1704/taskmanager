@@ -1,12 +1,13 @@
-import { getHighestOrderCard, verifyCardPermission } from '../lib/db-util.js';
+import { attachUserToLog, createAuditLog, getHighestOrderCard, verifyCardPermission } from '../lib/db-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
+import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';
 import List from '../models/list.model.js';
 
 
 export const createCard = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId, listId, title } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
@@ -22,6 +23,8 @@ export const createCard = async (req, res, next) => {
         await card.save();
 
         await List.findByIdAndUpdate(listId, { $push: { cards: card._id } });
+
+        await createAuditLog("card", "create", card._id, card.title, orgId, userId);
 
         res.status(201).json({ success: true, data: card });
 
@@ -97,7 +100,7 @@ export const getCard = async (req, res, next) => {
 
 export const updateCard = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId, listId, cardId, title, description } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
@@ -111,6 +114,8 @@ export const updateCard = async (req, res, next) => {
 
         await card.save();
 
+        await createAuditLog("card", "update", cardId, card.title, orgId, userId);
+
         res.status(200).json({ success: true });
 
     } catch (error) {
@@ -121,7 +126,7 @@ export const updateCard = async (req, res, next) => {
 
 export const copyCard = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId, listId, cardId } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
@@ -143,6 +148,8 @@ export const copyCard = async (req, res, next) => {
 
         await List.findByIdAndUpdate(listId, { $push: { cards: newCard._id } });
 
+        await createAuditLog("card", "create", newCard._id, newCard.title, orgId, userId);
+
         res.status(201).json({ success: true, data: newCard });
     } catch (error) {
         next(error)
@@ -152,7 +159,7 @@ export const copyCard = async (req, res, next) => {
 
 export const deleteCard = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId, listId, cardId } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
@@ -161,10 +168,34 @@ export const deleteCard = async (req, res, next) => {
 
         if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
 
-        await List.findByIdAndUpdate(listId, { $pull: { cards: cardId } });
         await card.deleteOne();
+        await List.findByIdAndUpdate(listId, { $pull: { cards: cardId } });
+
+        await createAuditLog("card", "delete", cardId, card.title, orgId, userId);
 
         res.status(200).json({ success: true });
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const getCardAuditLog = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { cardId } = req.params;
+
+        const cardLog = await AuditLog.find({ entityId: cardId, orgId })
+                        .sort({ updatedAt: -1 })
+                        .limit(5);
+        
+        for (let i = 0; i < cardLog.length; i++) {
+            const data = cardLog[i].toObject();
+            await attachUserToLog(data);
+            cardLog[i] = data;
+        }
+
+        return res.status(200).json({ success: true, data: cardLog });
     } catch (error) {
         next(error)
     }

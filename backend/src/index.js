@@ -8,6 +8,7 @@ import { connectDB } from './lib/db.js'
 import boardRouter from './routes/board.route.js'
 import listRouter from './routes/list.route.js'
 import cardRouter from './routes/card.route.js'
+import orgRouter from './routes/org.route.js'
 import unsplashRouter from './routes/unsplash.route.js'
 
 import { isAuthenticated } from './middlewares/auth.middleware.js'
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/board', isAuthenticated, boardRouter);
 app.use('/api/list', isAuthenticated, listRouter);
 app.use('/api/card', isAuthenticated, cardRouter);
+app.use('/api/org', isAuthenticated, orgRouter);
 app.use('/api/unsplash', isAuthenticated, unsplashRouter);
 
 
