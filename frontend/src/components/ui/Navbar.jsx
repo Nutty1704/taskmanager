@@ -13,7 +13,7 @@ const Navbar = () => {
         <Logo />
         <div id="nav-links" className='flex items-center justify-center gap-4 md:justify-end w-full'>
           <ModeToggle />
-          <Button variant="outline">
+          <Button variant="ghost">
             <SignedOut>
               <Link className='poppins-medium font-medium flex items-center justify-center gap-2' to='/login'>
                 <LogIn size='20' />

@@ -1,0 +1,26 @@
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* For Chrome, Edge, and Safari */
+  .custom-scrollbar::-webkit-scrollbar {
+    display: block;
+    width: 0.15rem;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--secondary)); /* Light gray */
+    border-radius: 0.25rem;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground)); /* Darker gray */
+    border-radius: 1rem;
+    border: 0; /* Adds padding effect */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground)); /* Darker on hover */
+  }
+  
+  

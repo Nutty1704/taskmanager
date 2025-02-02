@@ -3,6 +3,7 @@ import Sidebar from '../components/ui/Sidebar'
 import { useParams } from 'react-router-dom'
 import SettingsPage from './SettingsPage';
 import BoardsPage from './BoardsPage';
+import ActivityPage from './ActivityPage';
 
 const OrganizationPage = () => {
   const { orgId, page } = useParams();
@@ -14,6 +15,8 @@ const OrganizationPage = () => {
         return <BoardsPage />
       case 'settings':
         return <SettingsPage />
+      case 'activity':
+        return <ActivityPage />
       default:
         return 'Not Found'
     }

@@ -1,4 +1,3 @@
-import { ListEndIcon } from "lucide-react";
 import apiClient from "./index";
 
 export const createCard = async (data) => {
@@ -64,5 +63,49 @@ export const updateCard = async (data) => {
     } catch (error) {
         console.error("Error updating card", error);
         return { success: false };
+    }
+}
+
+
+export const copyCard = async (data) => {
+    try {
+        const resposne = await apiClient.post('/api/card/copy', data);
+
+        if (!resposne.data.success) {
+            return { success: false, newCard: null };
+        }
+
+        return { success: true, newCard: resposne.data.data };
+    } catch (error) {
+        console.error("Error copying card", error);
+        return { success: false, newCard: null };
+    }
+}
+
+
+export const deleteCard = async (data) => {
+    try {
+        const response = await apiClient.post('/api/card/delete', data);
+
+        return { success: response.data.success };
+    } catch (error) {
+        console.error("Error deleting card", error);
+        return { success: false };
+    }
+}
+
+
+export const fetchCardAuditLog = async (cardId) => {
+    try {
+        const response = await apiClient.get(`/api/card/${cardId}/logs`);
+
+        if (!response.data.success) {
+            return { success: false, logs: [] };
+        }
+
+        return { success: true, logs: response.data.data };
+    } catch (error) {
+        console.error("Error fetching card audit log", error);
+        return { success: false, logs: [] };
     }
 }

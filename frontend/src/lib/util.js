@@ -23,3 +23,20 @@ export const getTheme = () => {
     }
   )
 }
+
+
+export const generateLogMessage = (log) => {
+  const { action, entityTitle, entityType } = log;
+  
+  switch (action.toLowerCase()) {
+    case 'create':
+      return `Created ${entityType.toLowerCase()} ${entityTitle}`;
+    case 'update':
+      return `Updated ${entityType.toLowerCase()} ${entityTitle}`;
+    case 'delete':
+      return `Deleted ${entityType.toLowerCase()} ${entityTitle}`;
+    default:
+      return `Performed ${action} on ${entityType.toLowerCase()} ${entityTitle}`;
+
+  }
+}
