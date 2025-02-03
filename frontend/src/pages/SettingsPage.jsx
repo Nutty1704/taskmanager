@@ -3,7 +3,7 @@ import { OrganizationProfile } from '@clerk/clerk-react'
 
 const SettingsPage = () => {
   return (
-    <div className='w-full'>
+    <div className='w-full mb-5'>
         <OrganizationProfile
             appearance={{
                 elements: {
