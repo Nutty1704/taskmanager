@@ -1,4 +1,4 @@
-import { attachUserToLog, createAuditLog, getHighestOrderCard, verifyCardPermission } from '../lib/db-util.js';
+import { attachUserToLogs, createAuditLog, getHighestOrderCard, verifyCardPermission } from '../lib/db-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
 import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';
@@ -189,11 +189,7 @@ export const getCardAuditLog = async (req, res, next) => {
                         .sort({ updatedAt: -1 })
                         .limit(5);
         
-        for (let i = 0; i < cardLog.length; i++) {
-            const data = cardLog[i].toObject();
-            await attachUserToLog(data);
-            cardLog[i] = data;
-        }
+        await attachUserToLogs(cardLog);
 
         return res.status(200).json({ success: true, data: cardLog });
     } catch (error) {

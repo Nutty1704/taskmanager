@@ -121,36 +121,45 @@ export const createAuditLog = async (entityType, action, entityId, entityTitle, 
 }
 
 
-export const attachUserToLog = async (log) => {
-    try {
-        if (!log.userId) {
-            return log;
-        }
-
-        const user = await clerkClient.users.getUser(log.userId);
-
-        if (!user) {
-            return log;
-        }
-
-        log.userName = user.firstName + " " + user.lastName;
-        log.userImage = user.imageUrl;
-    } catch (error) {
-        console.log("Error in attachUserToLog", error);
-        throw error;
-    }
-}
-
-
 export const attachUserToLogs = async (logs) => {
     try {
-        for (let i = 0; i < logs.length; i++) {
-            const data = logs[i].toObject();
-            await attachUserToLog(data);
-            logs[i] = data;
-        }
+        if (!logs.length) return;
+
+        logs.forEach((log, index) => {
+            logs[index] = log.toObject()
+        });
+
+        const userIds = [... new Set(logs.map(log => log.userId))];
+
+        const users = await fetchUsersFromClerk(userIds);
+
+        const userMap = new Map(users.map(user => [user.id, user]));
+
+        logs.forEach(log => {
+            const user = userMap.get(log.userId) || null;
+            log.userName = user.firstName + " " + user.lastName;
+            log.userImage = user.imageUrl;
+            
+        });
+
     } catch (error) {
         console.log("Error in attachUserToLogs", error);
         throw error;
     }
 }
+
+// Function to batch-fetch users from Clerk API
+const fetchUsersFromClerk = async (userIds) => {
+    try {
+        if (userIds.length === 0) return [];
+
+        const users = await clerkClient.users.getUserList({
+            userId: userIds
+        });
+
+        return users.data;
+    } catch (error) {
+        console.error("Error fetching users from Clerk:", error);
+        return [];
+    }
+};

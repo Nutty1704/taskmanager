@@ -32,7 +32,9 @@ const auditLogSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+}, { timestamps: true });
+
+auditLogSchema.index({ orgId: 1, entityId: 1 });
 
 const AuditLog = mongoose.model("AuditLog", auditLogSchema);
 
