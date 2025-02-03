@@ -13,9 +13,9 @@ const ActivityList = () => {
     const navigate = useNavigate();
     const { token } = useAuthStore();
     const { data: auditLogs, isLoading } = useQuery({
-        queryKey: ['audit-logs', orgId],
+        queryKey: ['audit-logs', orgId, token],
         queryFn: getAuditLogs,
-        enabled: !!orgId,
+        enabled: !!orgId && !!token,
         select: (data) => (data.success ? data.data : []),
         staleTime: 0,
     });
