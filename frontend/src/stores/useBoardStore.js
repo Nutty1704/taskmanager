@@ -7,6 +7,11 @@ const useBoardStore = create((set) => ({
     },
     addBoard: (board) => {
         set((state) => ({ boards: [board, ...state.boards] }))
+    },
+    updateBoard: (board) => {
+        set((state) => ({
+            boards: state.boards.map((b) => (b._id === board._id ? board : b))
+        }))
     }
 }));
 

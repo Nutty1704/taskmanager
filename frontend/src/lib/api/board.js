@@ -57,9 +57,9 @@ export const getBoard = async (boardId) => {
 
 export const updateBoard = async (data) => {
     try {
-        const { id, title } = data;
+        const { id, title, isStarred } = data;
 
-        const response = await apiClient.post('/api/board/update', { id, title });
+        const response = await apiClient.post('/api/board/update', { id, title, isStarred });
 
         return { success: true, updatedBoard: response.data.data };
     } catch (error) {
