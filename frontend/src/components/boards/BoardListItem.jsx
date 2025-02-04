@@ -20,7 +20,7 @@ const BoardListItem = ({ board }) => {
 
             if (!success) {
                 board.isStarred = prevState;
-                toast.error('Failed to star board'); 
+                toast.error('Failed to star board');
                 updateBoardLocal(board);
             }
         } catch (error) {
@@ -39,12 +39,17 @@ const BoardListItem = ({ board }) => {
                 {board.title}
             </p>
 
-            <Star 
-                onClick={toggleStar}
-                fill={board.isStarred ? '#FFD700' : 'none'}
-                strokeWidth='0.15rem'
-                className={`hidden group-hover:block absolute top-3 right-3 h-4 w-4 hover:text-[#FFD700] hover:scale-110 transition ${board.isStarred ? 'text-[#FFD700]' : 'text-white/50'}`} 
-            />
+            <div className="absolute top-3 right-3 overflow-hidden">
+                <div className="hidden group-hover:block animate-from-right">
+                    <Star
+                        onClick={toggleStar}
+                        fill={board.isStarred ? '#FFD700' : 'none'}
+                        strokeWidth="0.15rem"
+                        className={`h-4 w-4 hover:text-[#FFD700] hover:scale-110 transition ${board.isStarred ? 'text-[#FFD700]' : 'text-white/50'}`}
+                    />
+                </div>
+            </div>
+
         </Link>
     )
 }
