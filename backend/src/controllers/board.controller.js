@@ -106,11 +106,15 @@ export const getBoard = async (req, res, next) => {
 
 export const updateBoard = async (req, res, next) => {
     try {
-        const { id, title } = req.body;
+        const { id, title, isStarred } = req.body;
         const { orgId, userId } = req.auth;
 
-        if (!id || !title) {
-            throw new InvalidDataError("Board id and title are required");
+        if (!id) {
+            throw new InvalidDataError("Board id is required");
+        }
+
+        if (!title && isStarred === undefined) {
+            throw new InvalidDataError("At least one field is required");
         }
 
         const board = await Board.findById(id);
@@ -123,11 +127,14 @@ export const updateBoard = async (req, res, next) => {
             throw new UnauthorizedError("Unauthorized");
         }
 
-        board.title = title;
+        if (title) board.title = title;
+        if (isStarred !== undefined) board.isStarred = isStarred;
 
         await board.save();
 
-        await createAuditLog("board", "update", board._id, board.title, orgId, userId);
+        if (title) {
+            await createAuditLog("board", "update", board._id, board.title, orgId, userId);
+        }
 
         res.status(200).json({ success: true, data: board });
     } catch (error) {

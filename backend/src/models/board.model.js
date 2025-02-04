@@ -31,12 +31,10 @@ const boardSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    lists: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "List"
-        }
-    ]
+    isStarred: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 
