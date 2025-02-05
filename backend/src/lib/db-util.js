@@ -4,6 +4,8 @@ import List from "../models/list.model.js";
 import AuditLog, { auditLogActions, auditLogEntityTypes } from "../models/audit-log.model.js";
 import { NotFoundError, UnauthorizedError } from "./error-util.js";
 import { clerkClient } from "@clerk/express"
+import labelColors from '../config/labelColors.json' with { type: 'json' };
+import Label from "../models/label.model.js";
 
 
 export const verifyOrgForBoard = async (orgId, boardId) => {
@@ -139,7 +141,7 @@ export const attachUserToLogs = async (logs) => {
             const user = userMap.get(log.userId) || null;
             log.userName = user.firstName + " " + user.lastName;
             log.userImage = user.imageUrl;
-            
+
         });
 
     } catch (error) {
@@ -163,3 +165,59 @@ const fetchUsersFromClerk = async (userIds) => {
         return [];
     }
 };
+
+
+export const isValidColor = (color) => {
+    return Object.hasOwn(labelColors, `${color}`);
+}
+
+const getIdByColor = (hex) => {
+    // Loop through the colors object and find the key for the given hex value
+    for (const key in colors) {
+        if (colors[key].hex === hex) {
+            return key; // Return the ID (key) corresponding to the hex value
+        }
+    }
+    return null; // Return null if the hex value doesn't exist
+};
+
+const getColorByKey = (key) => {
+    const colorData = colors[key];
+    if (colorData) {
+        return colorData;
+    }
+    return null; // If key doesn't exist
+};
+
+
+export const createDefaultLabels = async (boardId) => {
+    try {
+        const defaultColors = [6, 7, 8, 9, 10];
+
+        const labels = await Promise.all(
+            defaultColors.map(async (color) => {
+                const label = await Label.create({
+                    color,
+                    boardId
+                });
+                return label._id
+            })
+        );
+
+        return labels;
+    } catch (error) {
+        console.log("Error in createDefaultLabels", error);
+        throw error;
+    }
+}
+
+
+export const getCardLabels = async (boardId, cardId) => {
+    try {
+        const labels = await Label.find({ boardId, cardId });
+        return labels;
+    } catch (error) {
+        console.log("Error in getCardLabels", error);
+        throw error;
+    }
+}

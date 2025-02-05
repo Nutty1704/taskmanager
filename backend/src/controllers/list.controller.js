@@ -16,6 +16,9 @@ export const getBoardLists = async (req, res, next) => {
                             path: 'cards',
                             options: {
                                 sort: { position: 1 }
+                            },
+                            populate: {
+                                path: 'labels'
                             }
                         });
 

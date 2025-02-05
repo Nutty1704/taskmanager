@@ -1,6 +1,7 @@
 import Board from '../models/board.model.js'
 import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
-import { createAuditLog } from '../lib/db-util.js';
+import { createAuditLog, createDefaultLabels, isValidColor, verifyOrgForBoard } from '../lib/db-util.js';
+import Label from '../models/label.model.js';
 
 export const createBoard = async (req, res, next) => {
     try {
@@ -29,6 +30,7 @@ export const createBoard = async (req, res, next) => {
             imageUserName
         });
 
+        await createDefaultLabels(newBoard._id);
         await newBoard.save();
 
         await createAuditLog("board", "create", newBoard._id, newBoard.title, orgId, userId);
@@ -61,6 +63,8 @@ export const deleteBoard = async (req, res, next) => {
         }
 
         await Board.findByIdAndDelete(id);
+
+        await Label.deleteMany({ boardId: id });
 
         await createAuditLog("board", "delete", board._id, board.title, orgId, userId);
 
@@ -137,6 +141,79 @@ export const updateBoard = async (req, res, next) => {
         }
 
         res.status(200).json({ success: true, data: board });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const getBoardLabels = async (req, res, next) => {
+    try {
+        const { boardId } = req.params;
+
+        if (!boardId) throw new InvalidDataError("Board id is required");
+
+        const labels = await Label.find({ boardId });
+        
+        res.status(200).json({ success: true, data: labels });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const updateBoardLabel = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId } = req.params;
+        const { id, title, color } = req.body;
+
+        if (!boardId) throw new InvalidDataError("Board id is required");
+        if (!(isValidColor(color))) throw new InvalidDataError("Invalid color");
+
+        const boardExists = await Board.exists({ _id: boardId, orgId });
+
+        if (!boardExists) throw new NotFoundError("Board not found");
+
+        const label = await Label.findById(id);
+
+        if (!label) {
+            const newLabel = await Label.create({
+                title,
+                color,
+                boardId
+            });
+
+            return res.status(201).json({ success: true, data: newLabel });
+        }
+
+        if (label.boardId.toString() !== boardId) throw new UnauthorizedError("Unauthorized");
+
+        label.title = title;
+        label.color = color;
+
+        await label.save();
+
+        return res.status(200).json({ success: true, data: label });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const deleteBoardLabel = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId, labelId } = req.params;
+
+        await verifyOrgForBoard(orgId, boardId);
+
+        const label = await Label.findOneAndDelete({ _id: labelId, boardId });
+
+        if (!label) throw new NotFoundError("Label not found");
+
+        res.status(200).json({ success: true });
     } catch (error) {
         next(error);
     }

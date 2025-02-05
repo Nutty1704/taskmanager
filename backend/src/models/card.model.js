@@ -18,7 +18,12 @@ const cardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'List',
         required: true
-    }
+    },
+    labels: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Label',
+        default: []
+    }]
 }, { timestamps: true });
 
 

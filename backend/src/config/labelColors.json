@@ -1,0 +1,17 @@
+{
+  "1": { "hex": "#164B35", "name": "subtle green" },
+  "2": { "hex": "#533F04", "name": "subtle yellow" },
+  "3": { "hex": "#702E00", "name": "subtle orange" },
+  "4": { "hex": "#5D1F1A", "name": "subtle red" },
+  "5": { "hex": "#352C63", "name": "subtle purple" },
+  "6": { "hex": "#216E4E", "name": "green" },
+  "7": { "hex": "#7F5F01", "name": "yellow" },
+  "8": { "hex": "#A54800", "name": "orange" },
+  "9": { "hex": "#AE2E24", "name": "red" },
+  "10": { "hex": "#5E4DB2", "name": "purple" },
+  "11": { "hex": "#4BcE97", "name": "bold green" },
+  "12": { "hex": "#E2B203", "name": "bold yellow" },
+  "13": { "hex": "#FEA362", "name": "bold orange" },
+  "14": { "hex": "#F87168", "name": "bold red" },
+  "15": { "hex": "#9F8FEF", "name": "bold purple" }
+}

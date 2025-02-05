@@ -2,6 +2,7 @@ import { attachUserToLogs, createAuditLog, getHighestOrderCard, verifyCardPermis
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
 import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';
+import Label from '../models/label.model.js';
 import List from '../models/list.model.js';
 
 
@@ -86,6 +87,7 @@ export const getCard = async (req, res, next) => {
         if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
 
         await card.populate('list', '_id title');
+        await card.populate('labels', 'title color');
 
         const cardObject = card.toObject();
         cardObject.list = card.list;
@@ -141,7 +143,8 @@ export const copyCard = async (req, res, next) => {
             list_id: listId,
             title: card.title + ' Copy',
             description: card.description,
-            position: newPosition
+            position: newPosition,
+            labels: card.labels.map(l => l)
         });
 
         await newCard.save();
@@ -170,6 +173,7 @@ export const deleteCard = async (req, res, next) => {
 
         await card.deleteOne();
         await List.findByIdAndUpdate(listId, { $pull: { cards: cardId } });
+        await Label.deleteMany({ boardId, cardId });
 
         await createAuditLog("card", "delete", cardId, card.title, orgId, userId);
 
@@ -192,6 +196,37 @@ export const getCardAuditLog = async (req, res, next) => {
         await attachUserToLogs(cardLog);
 
         return res.status(200).json({ success: true, data: cardLog });
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export const modifyCardLabel = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId, cardId, labelId, checked, listId } = req.body;
+
+        await verifyCardPermission(orgId, boardId, listId);
+
+        const card = await Card.findById(cardId);
+
+        if (!card) throw new NotFoundError('Card not found');
+
+        const label = await Label.findById(labelId);
+
+        if (!label) throw new NotFoundError('Label not found');
+
+        if (checked) {
+            if (!card.labels) card.labels = [];
+            if (!card.labels.includes(labelId)) card.labels.push(labelId);
+        } else {
+            card.labels = card.labels.filter(l => l.toString() !== labelId);
+        }
+
+        await card.save();
+
+        res.status(200).json({ success: true });
     } catch (error) {
         next(error)
     }
