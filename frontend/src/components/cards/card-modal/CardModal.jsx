@@ -4,10 +4,12 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import CardHeader from './CardHeader';
 import { fetchCard, fetchCardAuditLog } from '@/src/lib/api/card';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CardDescription from './CardDescription';
 import CardActions from './CardActions';
 import CardActivity from './CardActivity';
+import CardUnderHeader from './under-header/CardUnderHeader';
+import useCardStore from '@/src/stores/useCardStore';
 
 const CardModal = () => {
   const { id, listId, isOpen, onClose } = useCardModal();
@@ -29,46 +31,61 @@ const CardModal = () => {
     staleTime: 0,
   });
 
+  const queryClient = useQueryClient();
+
+  const { updateCard } = useCardStore();
+
+  React.useEffect(() => {
+    if (!card) return;
+    updateCard(card._id, listId, card);
+  }, [card]);
+
   return (
     <Dialog
       open={isOpen}
       onOpenChange={onClose}
     >
-      <DialogContent className='poppins-regular'>
-        <DialogTitle>
-          {
-            !card || isLoading
-              ? (
-                <CardHeader.Skeleton />
-              ) : (
-                <CardHeader data={card} />
-              )
-          }
-        </DialogTitle>
+      <QueryClientProvider client={queryClient}>
+        <DialogContent className='poppins-regular'>
+          <DialogTitle className='mb-4'>
+            {
+              !card || isLoading
+                ? (
+                  <CardHeader.Skeleton />
+                ) : (
+                  <CardHeader data={card} />
+                )
+            }
 
-        <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
-          <div className='col-span-3'>
-            <div className='w-full space-y-6'>
-              {
-                !card || isLoading
-                  ? <CardDescription.Skeleton />
-                  : <CardDescription data={card} />
-              }
-
-              {!auditLog || isLoadingAudit
-                ? <CardActivity.Skeleton />
-                : <CardActivity items={auditLog} />
-              }
-
+            <div className='mt-3'>
+              <CardUnderHeader card={card} />
             </div>
-          </div>
+          </DialogTitle>
 
-          {!card || isLoading
-            ? <CardActions.Skeleton />
-            : <CardActions data={card} />
-          }
-        </div>
-      </DialogContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
+            <div className='col-span-3'>
+              <div className='w-full space-y-6'>
+                {
+                  !card || isLoading
+                    ? <CardDescription.Skeleton />
+                    : <CardDescription data={card} />
+                }
+
+                {!auditLog || isLoadingAudit
+                  ? <CardActivity.Skeleton />
+                  : <CardActivity items={auditLog} />
+                }
+
+              </div>
+            </div>
+
+            {!card || isLoading
+              ? <CardActions.Skeleton />
+              : <CardActions data={card} />
+            }
+          </div>
+        </DialogContent>
+      </QueryClientProvider>
     </Dialog>
   )
 }

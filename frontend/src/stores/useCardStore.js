@@ -49,6 +49,22 @@ const useCardStore = create((set) => ({
         });
 
         useListStore.getState().setLists(newLists);
+    },
+
+    removeLabelFromAllCards: (labelId) => {
+        const lists = useListStore.getState().lists;
+
+        const newLists = lists.map(list => {
+            list.cards = list.cards.map(card => {
+                card.labels = card.labels.filter(label => label._id !== labelId);
+
+                return card;
+            });
+
+            return list;
+        });
+
+        useListStore.getState().setLists(newLists);
     }
 
 }) );

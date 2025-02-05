@@ -109,3 +109,16 @@ export const fetchCardAuditLog = async (cardId) => {
         return { success: false, logs: [] };
     }
 }
+
+
+export const modifyCardLabels = async (boardId, cardId, listId, labelId, checked) => {
+    try {
+        const data = { boardId, cardId, listId, labelId, checked };
+        const response = await apiClient.post('/api/card/modify-label', data);
+
+        return { success: response.data.success };
+    } catch (error) {
+        console.error('Error updating card label', error);
+        return { success: false };
+    }
+}

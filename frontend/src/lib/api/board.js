@@ -83,3 +83,38 @@ export const deleteBoard = async (id) => {
         return { success: false };
     }
 }
+
+
+export const getBoardLabels = async (boardId) => {
+    try {
+        const response = await apiClient.get(`/api/board/${boardId}/labels`);
+        return { success: true, labels: response.data.data };
+    } catch (error) {
+        console.error('Error fetching board labels: ', error.response?.data || error.message);
+        return { success: false, labels: [] };
+    }
+}
+
+
+export const updateBoardLabel = async (boardId, labelId, title, color) => {
+    try {
+        const response = await apiClient.put(`/api/board/${boardId}/label`, { labelId, title, color });
+
+        return { success: response.data.success, newLabel: response.data.data };
+    } catch (error) {
+        console.error('Error updating board label: ', error.response?.data || error.message);
+        return { success: false };
+    }
+}
+
+
+export const deleteBoardLabel = async (boardId, labelId) => {
+    try {
+        const response = await apiClient.delete(`/api/board/${boardId}/label/${labelId}`);
+
+        return { success: response.data.success };
+    } catch (error) {
+        console.error('Error deleting board label: ', error.response?.data || error.message);
+        return { success: false };
+    }
+}

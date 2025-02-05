@@ -11,11 +11,13 @@ import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import FormTextArea from '../../form/form-text-area';
 import FormSubmit from '../../form/form-submit';
 import { Button } from '@/components/ui/button';
+import { useQueryClient } from '@tanstack/react-query';
 
 const CardDescription = ({ data }) => {
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef(null);
     const { boardId } = useParams();
+    const queryClient = useQueryClient();
     const { register, reset, setFocus, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(cardSchema.pick({ description: true })),
         defaultValues: {
@@ -70,6 +72,7 @@ const CardDescription = ({ data }) => {
             }
 
             data.description = formData.description;
+            queryClient.invalidateQueries(['card']);
             disableEditing();
             toast.success('Card description updated');
         } catch (error) {

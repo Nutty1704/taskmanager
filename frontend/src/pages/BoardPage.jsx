@@ -4,11 +4,14 @@ import useAuthStore from '../stores/useAuthStore';
 import { fetchLists } from '../lib/api/list';
 import ListContainer from '../components/lists/ListContainer';
 import useListStore from '../stores/useListStore';
+import { getBoardLabels } from '../lib/api/board';
+import useLabelStore from '../stores/useLabelStore';
 
 const BoardPage = () => {
         const { token } = useAuthStore();
         const { boardId } = useParams();
         const { setLists } = useListStore();
+        const { setLabels } = useLabelStore();
 
         useEffect(() => {
             const fetchAllLists = async () => {
@@ -18,6 +21,14 @@ const BoardPage = () => {
                 }
             }
 
+            const fetchAllLabels = async () => {
+                const { success, labels } = await getBoardLabels(boardId);
+                if (success) {
+                    setLabels(labels);
+                }
+            }
+
+            fetchAllLabels();
             fetchAllLists();
         }, [token, boardId]);
 

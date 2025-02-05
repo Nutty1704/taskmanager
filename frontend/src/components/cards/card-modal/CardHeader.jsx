@@ -9,7 +9,6 @@ import { cardSchema } from '@/src/lib/form-validators';
 import { updateCard } from '@/src/lib/api/card';
 import toast from 'react-hot-toast';
 import { useCardModal } from '@/src/hooks/useCardModal';
-import useCardStore from '@/src/stores/useCardStore';
 import { useEventListener } from 'usehooks-ts';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -19,7 +18,6 @@ const Header = ({ data }) => {
     const { boardId } = useParams();
     const formRef = useRef(null);
     const { isOpen } = useCardModal();
-    const { updateCard: updateCardLocal } = useCardStore();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
       resolver: zodResolver(cardSchema.pick({ title: true })),
       defaultValues: {
@@ -49,7 +47,6 @@ const Header = ({ data }) => {
         if (!success) {
           toast.error('Failed to update card');
         } else {
-          updateCardLocal(data._id, data.list_id, { title: formData.title });
           data.title = formData.title;
           toast.success('Card renamed');
           queryClient.invalidateQueries(['card-logs', data._id]);
@@ -71,7 +68,7 @@ const Header = ({ data }) => {
     useEventListener('keydown', onKeyDown);
 
   return (
-    <div className='flex items-start gap-x-3 mb-6 w-full'>
+    <div className='flex items-start gap-x-3 w-full'>
       <LayoutIcon size={17} className='mt-1 text-foreground' />
       <div className="w-full">
         <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
@@ -93,6 +90,9 @@ const Header = ({ data }) => {
           in list <span className='underline'>{data.list?.title}</span>
         </p>
       </div>
+
+      {/* Hidden input to avoid focusing on the form */}
+      <input hidden type='text' autoFocus />
     </div>
   )
 }
