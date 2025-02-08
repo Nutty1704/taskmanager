@@ -5,6 +5,8 @@ import { Plus } from 'lucide-react'
 import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react'
 import MobileSidebar from './MobileSidebar'
 import BoardFormPopover from '../form/create-board-form-popover'
+import { dark } from '@clerk/themes'
+import { ModeToggle } from '../theme/mode-toggle'
 
 const DashboardNavbar = ({ className = ''}) => {
   return (
@@ -27,15 +29,21 @@ const DashboardNavbar = ({ className = ''}) => {
           </BoardFormPopover>
         </div>
         <div className='flex items-center gap-x-2'>
+          <ModeToggle />
+
           <OrganizationSwitcher
             hidePersonal
             afterCreateOrganizationUrl={(organization) => `/organization/${organization.id}`}
             afterSelectOrganizationUrl={(organization) => `/organization/${organization.id}`}
             afterLeaveOrganizationUrl='/select-org'
             appearance={{
+              baseTheme: dark,
               elements: {
-                avatarBox: 'h-6 w-6'
-              }
+                // avatarBox: 'h-6 w-6',
+                organizationSwitcherTriggerIcon: 'text-foreground',
+                organizationSwitcherPopoverActions: 'bg-background text-foreground',
+                organizationSwitcherPopoverActionButton: 'text-foreground',
+              },
             }}
           />
 
