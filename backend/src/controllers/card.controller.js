@@ -103,7 +103,11 @@ export const getCard = async (req, res, next) => {
 export const updateCard = async (req, res, next) => {
     try {
         const { orgId, userId } = req.auth;
-        const { boardId, listId, cardId, title, description } = req.body;
+        const {
+            boardId, listId, cardId,
+            title, description,
+            startDate, dueDate
+        } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
 
@@ -113,6 +117,8 @@ export const updateCard = async (req, res, next) => {
 
         if (title) card.title = title;
         if (description) card.description = description;
+        if (startDate !== undefined) card.startDate = startDate;
+        if (dueDate !== undefined) card.dueDate = dueDate;
 
         await card.save();
 

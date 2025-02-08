@@ -23,7 +23,15 @@ const cardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Label',
         default: []
-    }]
+    }],
+    startDate: {
+        type: Date,
+        default: null
+    },
+    dueDate: {
+        type: Date,
+        default: null
+    }
 }, { timestamps: true });
 
 
