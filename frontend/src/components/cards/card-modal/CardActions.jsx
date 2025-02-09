@@ -3,11 +3,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useCardModal } from '@/src/hooks/useCardModal'
 import { copyCard, deleteCard } from '@/src/lib/api/card'
 import useCardStore from '@/src/stores/useCardStore'
-import { CopyIcon, Tag, Trash } from 'lucide-react'
+import { Clock, CopyIcon, Tag, Trash } from 'lucide-react'
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
 import CardLabelPopover from './actions/label/CardLabelPopover'
+import CardDatesPopover from './actions/dates/CardDatesPopover'
 
 const CardActions = ({ data }) => {
     const { boardId } = useParams();
@@ -64,6 +65,13 @@ const CardActions = ({ data }) => {
   return (
     <div className='space-y-2 mt-2'>
       <p className='text-xs poppins-semibold'>Actions</p>
+
+      <CardDatesPopover card={data} boardId={boardId}>
+        <Button variant='secondary' size='inline' className='w-full justify-start'>
+          <Clock className='h-4 w-4 mr-2' />
+          Dates
+        </Button>
+      </CardDatesPopover>
 
       <CardLabelPopover card={data}>
         <Button variant='secondary' size='inline' className='w-full justify-start'>

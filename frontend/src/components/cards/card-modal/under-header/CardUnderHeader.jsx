@@ -1,19 +1,48 @@
 import React from 'react'
 import CardUHLabelListItem from './labels/CardUHLabelItem';
+import CardUHDates from './labels/CardUHDates';
+import { useParams } from 'react-router-dom';
+
+export const UHHeader = ({ text }) => {
+  return (
+    <span className='text-xs font-medium text-muted-foreground'>{text}</span>
+  )
+}
+
+const UHBody = ({ children, className }) => {
+  return (
+    <div className={`flex flex-col items-start gap-1.5 justify-start ${className}`}>
+      {children}
+    </div>
+  )
+}
 
 const CardUnderHeader = ({ card }) => {
-    if (!card) return null;
+  if (!card) return null;
+  const { boardId } = useParams();
 
   return (
-    <div className='flex items-center gap-2 poppins-regular'>
-        <div className='space-y-1.5'>
-          <span className='text-xs font-medium text-muted-foreground'>Labels</span>
-          <div className="flex items-center justify-start gap-1.5">
+    <div className='flex items-start gap-4 poppins-regular'>
+      {card.labels?.length > 0 &&
+        (
+          <UHBody>
+            <UHHeader text="Labels" />
+            <div className="flex items-center justify-start gap-1.5">
               {card.labels?.map(label => (
-                  <CardUHLabelListItem key={label._id} label={label} />
+                <CardUHLabelListItem key={label._id} label={label} />
               ))}
-          </div>
-        </div>
+            </div>
+          </UHBody>
+        )
+      }
+
+      {(card.startDate || card.dueDate) &&
+        (
+          <UHBody>
+            <CardUHDates boardId={boardId} card={card} />
+          </UHBody>
+        )
+      }
     </div>
   )
 }

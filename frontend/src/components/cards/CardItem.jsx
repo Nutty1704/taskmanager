@@ -1,7 +1,7 @@
 import React from 'react'
 import { Draggable } from '@hello-pangea/dnd'
 import { useCardModal } from '@/src/hooks/useCardModal'
-import CardBadges from './CardBadges';
+import CardBadges from './card-badges/CardBadges';
 import CardUHLabelListItem from './card-modal/under-header/labels/CardUHLabelItem';
 
 const CardItem = ({ data, index }) => {
