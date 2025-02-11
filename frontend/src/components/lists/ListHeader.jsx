@@ -8,8 +8,10 @@ import { updateList } from '@/src/lib/api/list';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ListOptions from './ListOptions';
+import { Button } from '@/components/ui/button';
+import { Minimize2, Maximize2 } from 'lucide-react';
 
-const ListHeader = ({ data, onAddCard }) => {
+const ListHeader = ({ data, onAddCard, isCollapsed, toggleCollapse }) => {
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef(null);
 
@@ -73,14 +75,14 @@ const ListHeader = ({ data, onAddCard }) => {
                     onBlur={onBlur}
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <input 
+                    <input
                         hidden id="id" name="id"
-                        value={data._id} 
+                        value={data._id}
                         {...register('id')}
                     />
-                    <input 
+                    <input
                         hidden id="boardId" name="boardId"
-                        value={data.board_id} 
+                        value={data.board_id}
                         {...register('boardId')}
                     />
                     <FormInput
@@ -105,9 +107,27 @@ const ListHeader = ({ data, onAddCard }) => {
         )
     }
 
+    if (isCollapsed) {
+        return (
+            <div
+                className='pt-2 py-2 text-sm font-semibold flex flex-col gap-y-5 items-center justify-center'
+                onClick={toggleCollapse}
+            >
+                <Maximize2 size={16} />
+                <span className='text-md rotate-90 origin-center whitespace-nowrap'>
+                    {data.title}
+                </span>
+            </div>
+        )
+    }
+
     return (
         <div className='pt-2 px-2 text-sm font-semibold flex justify-between items-start gap-x-2'>
             {getElement(isEditing)}
+
+            <Button onClick={toggleCollapse} variant='ghost' size='sm'>
+                <Minimize2 size={16} />
+            </Button>
 
             <ListOptions
                 data={data}

@@ -6,7 +6,7 @@ import CardUHLabelListItem from './card-modal/under-header/labels/CardUHLabelIte
 import CardComplete from './card-modal/actions/complete/CardComplete';
 import { useParams } from 'react-router-dom';
 
-const CardItem = ({ data, index }) => {
+const CardItem = ({ data, index, className='' }) => {
     const cardModal = useCardModal();
     const { boardId } = useParams();
 
@@ -17,7 +17,7 @@ const CardItem = ({ data, index }) => {
                         ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
                         role='button'
                         onClick={() => cardModal.onOpen(data._id, data.list_id)}
-                        className='truncate border-2 border-transparent hover:border-foreground py-2 px-3 text-sm bg-background rounded-md shadow-sm flex flex-col gap-2'
+                        className={`truncate border-2 border-transparent hover:border-foreground py-2 px-3 text-sm bg-background rounded-md shadow-sm flex flex-col gap-2 ${className}`}
                     >
                         {data.labels?.length > 0 && (
                             <div
