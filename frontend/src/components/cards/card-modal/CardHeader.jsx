@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { useCardModal } from '@/src/hooks/useCardModal';
 import { useEventListener } from 'usehooks-ts';
 import { useQueryClient } from '@tanstack/react-query';
+import CardComplete from './actions/complete/CardComplete';
 
 const Header = ({ data }) => {
     // TODO: Add isEditing state and only show form when isEditing is true
@@ -69,7 +70,10 @@ const Header = ({ data }) => {
 
   return (
     <div className='flex items-start gap-x-3 w-full'>
-      <LayoutIcon size={17} className='mt-1 text-foreground' />
+      {/* <LayoutIcon size={17} className='mt-1 text-foreground' /> */}
+      <div className='mt-1.5'>
+        <CardComplete data={data} boardId={boardId} />
+      </div>
       <div className="w-full">
         <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
               <FormInput

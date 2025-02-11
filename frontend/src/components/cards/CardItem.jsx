@@ -3,9 +3,12 @@ import { Draggable } from '@hello-pangea/dnd'
 import { useCardModal } from '@/src/hooks/useCardModal'
 import CardBadges from './card-badges/CardBadges';
 import CardUHLabelListItem from './card-modal/under-header/labels/CardUHLabelItem';
+import CardComplete from './card-modal/actions/complete/CardComplete';
+import { useParams } from 'react-router-dom';
 
 const CardItem = ({ data, index }) => {
     const cardModal = useCardModal();
+    const { boardId } = useParams();
 
     return (
         <Draggable draggableId={data._id} index={index}>
@@ -30,7 +33,12 @@ const CardItem = ({ data, index }) => {
                                 ))}
                             </div>
                         )}
-                        <span className='poppins-medium'>{data.title}</span>
+                        <div className='flex items-center justify-start gap-2'>
+                            <div onClick={(e) => {e.preventDefault(); e.stopPropagation();}}>
+                                <CardComplete data={data} boardId={boardId} />
+                            </div>
+                            <span className='poppins-medium'>{data.title}</span>
+                        </div>
                         <CardBadges data={data} />
                     </div>
             )}
