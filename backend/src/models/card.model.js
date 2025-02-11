@@ -31,6 +31,10 @@ const cardSchema = new mongoose.Schema({
     dueDate: {
         type: Date,
         default: null
+    },
+    isComplete: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

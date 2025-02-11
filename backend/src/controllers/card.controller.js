@@ -106,23 +106,34 @@ export const updateCard = async (req, res, next) => {
         const {
             boardId, listId, cardId,
             title, description,
-            startDate, dueDate
+            startDate, dueDate,
+            isComplete
         } = req.body;
 
         await verifyCardPermission(orgId, boardId, listId);
 
         const card = await Card.findById(cardId);
+        let logUpdate = false;
 
         if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
 
-        if (title) card.title = title;
-        if (description) card.description = description;
+        if (title) {
+            card.title = title
+            logUpdate = true
+        };
+        if (description) {
+            card.description = description;
+            logUpdate = true
+        };
         if (startDate !== undefined) card.startDate = startDate;
         if (dueDate !== undefined) card.dueDate = dueDate;
+        if (isComplete !== undefined) card.isComplete = isComplete;
 
         await card.save();
 
-        await createAuditLog("card", "update", cardId, card.title, orgId, userId);
+        if (logUpdate) {
+            await createAuditLog("card", "update", cardId, card.title, orgId, userId);
+        }
 
         res.status(200).json({ success: true });
 
