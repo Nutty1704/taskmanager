@@ -8,7 +8,7 @@ const MarketingPage = () => {
 
   return (
     <>
-      <main className='pt-40 pb-20'>
+      <main className='pt-40 pb-20 mx-auto'>
         <div className='flex items-center justify-center flex-col'>
           <div className="flex items-center justify-center flex-col gap-10">
             <div className='bg-secondary/90 cursor-pointer hover:bg-secondary/60 px-4 py-1 rounded-full'>
