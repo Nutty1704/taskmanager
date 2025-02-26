@@ -35,7 +35,12 @@ const cardSchema = new mongoose.Schema({
     isComplete: {
         type: Boolean,
         default: false
-    }
+    },
+    assignedTo: [{
+        type: String,
+        ref: 'User',
+        default: []
+    }]
 }, { timestamps: true });
 
 
@@ -48,6 +53,44 @@ cardSchema.virtual('list',{
 
 cardSchema.get('toObject', { virtuals: true });
 cardSchema.get('toJSON', { virtuals: true });
+
+
+cardSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+    const cardId = this._id;
+
+    try {
+        const User = mongoose.model('User');
+        await User.updateMany(
+            { cards: cardId },
+            { $pull: { cards: cardId } }
+        );
+        next();
+    } catch (err) {
+        console.error(`Error during cleanup for card ${cardId}:`, err);
+        next(err);
+    }
+});
+
+cardSchema.pre('deleteMany', async function (next) {
+    try {
+        const filter = this.getFilter();
+        const cardsToDelete = await mongoose.model('Card').find(filter, '_id');
+        const cardIds = cardsToDelete.map(card => card._id);
+
+        if (cardIds.length > 0) {
+            const User = mongoose.model('User');
+            await User.updateMany(
+                { cards: { $in: cardIds } },
+                { $pull: { cards: { $in: cardIds } } }
+            );
+        }
+
+        next();
+    } catch (err) {
+        console.error(`Error during cleanup for deleteMany operation:`, err);
+        next(err);
+    }
+});
 
 
 const Card = mongoose.model("Card", cardSchema);

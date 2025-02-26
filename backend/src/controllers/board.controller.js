@@ -1,7 +1,10 @@
 import Board from '../models/board.model.js'
-import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
-import { createAuditLog, createDefaultLabels, isValidColor, verifyOrgForBoard } from '../lib/db-util.js';
 import Label from '../models/label.model.js';
+
+import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
+import { isValidColor } from '../lib/label-util.js';
+import { createDefaultLabels, verifyOrgForBoard } from '../lib/board-util.js';
+import { createAuditLog } from '../lib/audit-util.js';
 
 export const createBoard = async (req, res, next) => {
     try {
@@ -166,7 +169,7 @@ export const updateBoardLabel = async (req, res, next) => {
     try {
         const { orgId } = req.auth;
         const { boardId } = req.params;
-        const { id, title, color } = req.body;
+        const { labelId: id, title, color } = req.body;
 
         if (!boardId) throw new InvalidDataError("Board id is required");
         if (!(isValidColor(color))) throw new InvalidDataError("Invalid color");
@@ -175,7 +178,7 @@ export const updateBoardLabel = async (req, res, next) => {
 
         if (!boardExists) throw new NotFoundError("Board not found");
 
-        const label = await Label.findById(id);
+        const label = id ? await Label.findById(id) : null;
 
         if (!label) {
             const newLabel = await Label.create({

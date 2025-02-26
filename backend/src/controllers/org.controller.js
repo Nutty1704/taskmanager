@@ -1,4 +1,4 @@
-import { attachUserToLogs } from "../lib/db-util.js";
+import { attachUserToLogs } from "../lib/audit-util.js";
 import AuditLog from "../models/audit-log.model.js";
 
 export const getAuditLogs = async (req, res, next) => {

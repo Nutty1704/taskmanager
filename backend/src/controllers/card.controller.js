@@ -1,4 +1,5 @@
-import { attachUserToLogs, createAuditLog, getHighestOrderCard, verifyCardPermission } from '../lib/db-util.js';
+import { assignUser, formatCard, getHighestOrderCard, unassignUser, verifyCardPermission } from '../lib/card-util.js';
+import { attachUserToLogs, createAuditLog } from '../lib/audit-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
 import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';
@@ -86,13 +87,9 @@ export const getCard = async (req, res, next) => {
 
         if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
 
-        await card.populate('list', '_id title');
-        await card.populate('labels', 'title color');
+        const formattedCard = await formatCard(card);
 
-        const cardObject = card.toObject();
-        cardObject.list = card.list;
-
-        res.status(200).json({ success: true, data: cardObject });
+        res.status(200).json({ success: true, data: formattedCard });
 
     } catch (error) {
         next(error)
@@ -150,18 +147,20 @@ export const copyCard = async (req, res, next) => {
 
         await verifyCardPermission(orgId, boardId, listId);
 
-        const card = await Card.findById(cardId);
+        const cardDoc = await Card.findById(cardId);
 
-        if (!card || card.list_id.toString() !== listId) throw new NotFoundError('Card not found');
+        if (!cardDoc || cardDoc.list_id.toString() !== listId) throw new NotFoundError('Card not found');
+
+        const { _id, ...card } = cardDoc.toObject();
 
         const newPosition = await getHighestOrderCard(listId) + 1;
 
         const newCard = new Card({
             list_id: listId,
             title: card.title + ' Copy',
-            description: card.description,
             position: newPosition,
-            labels: card.labels.map(l => l)
+            labels: card.labels.map(l => l),
+            ...card
         });
 
         await newCard.save();
@@ -170,7 +169,9 @@ export const copyCard = async (req, res, next) => {
 
         await createAuditLog("card", "create", newCard._id, newCard.title, orgId, userId);
 
-        res.status(201).json({ success: true, data: newCard });
+        const formattedCard = await formatCard(newCard);
+
+        res.status(201).json({ success: true, data: formattedCard });
     } catch (error) {
         next(error)
     }
@@ -244,6 +245,35 @@ export const modifyCardLabel = async (req, res, next) => {
         await card.save();
 
         res.status(200).json({ success: true });
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateAssignees = async (req, res, next) => {
+    try {
+        const { orgId } = req.auth;
+        const { boardId, listId, cardId, assignees } = req.body;
+
+        if (!boardId || !listId || !cardId || !assignees) throw new InvalidDataError('Missing required fields');
+
+        await verifyCardPermission(orgId, boardId, listId);
+
+        const card = await Card.findById(cardId);
+
+        if (!card) throw new NotFoundError('Card not found');
+
+        const removedAssignees = card.assignedTo?.filter(id => !assignees.includes(id));
+
+        await Promise.all(assignees.map(id => assignUser(id, orgId, card)));
+        await Promise.all(removedAssignees.map(id => unassignUser(id, orgId, card)));
+
+
+        const updatedCard = await Card.findById(cardId);
+        const formattedCard = await formatCard(updatedCard);
+
+        return res.status(200).json({ success: true, data: formattedCard });
+
     } catch (error) {
         next(error)
     }

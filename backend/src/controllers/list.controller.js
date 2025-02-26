@@ -1,7 +1,9 @@
 import List from '../models/list.model.js';
 import Card from '../models/card.model.js';
-import { createAuditLog, getHighestOrderList, safeGetList, verifyOrgForBoard } from '../lib/db-util.js';
-import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
+import { createAuditLog } from '../lib/audit-util.js';
+import { InvalidDataError } from '../lib/error-util.js';
+import { fetchListsWithCards, safeGetList, populateLists, safeGetPopulatedList, getHighestOrderList } from '../lib/list-util.js';
+import { verifyOrgForBoard } from '../lib/board-util.js';
 
 export const getBoardLists = async (req, res, next) => {
     try {
@@ -10,24 +12,14 @@ export const getBoardLists = async (req, res, next) => {
 
         await verifyOrgForBoard(orgId, boardId);
 
-        const lists = await List.find({ board_id: boardId })
-                        .sort({ position: 1  })
-                        .populate({
-                            path: 'cards',
-                            options: {
-                                sort: { position: 1 }
-                            },
-                            populate: {
-                                path: 'labels'
-                            }
-                        });
+        let lists = await fetchListsWithCards(boardId);
+        lists = await populateLists(lists);
 
         res.status(200).json({ success: true, data: lists });
-
     } catch (error) {
         next(error);
     }
-}
+};
 
 
 export const createList = async (req, res, next) => {
@@ -73,7 +65,11 @@ export const updateList = async (req, res, next) => {
             throw new InvalidDataError("Title is required");
         }
 
-        const list = await safeGetList(orgId, boardId, id);
+        if (!id) {
+            throw new InvalidDataError("List id is required");
+        }
+
+        const list = await safeGetPopulatedList(orgId, boardId, id);
 
         list.title = title;
 
@@ -133,10 +129,8 @@ export const copyList = async (req, res, next) => {
             if (!card) continue;
 
             const newCard = new Card({
-                title: card.title,
-                description: card.description,
                 list_id: newList._id,
-                position: card.position
+                ...card
             });
 
             await newCard.save();
@@ -148,16 +142,11 @@ export const copyList = async (req, res, next) => {
 
         await newList.save();
 
-        await newList.populate({
-            path: 'cards',
-            options: {
-                sort: { position: 1 }
-            }
-        });
+        const formattedList = await populateLists([newList]);
 
         await createAuditLog("list", "create", newList._id, newList.title, orgId, userId);
 
-        res.status(201).json({ success: true, data: newList });
+        res.status(201).json({ success: true, data: formattedList[0] });
 
     } catch (error) {
         next(error);

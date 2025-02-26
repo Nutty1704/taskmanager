@@ -5,3 +5,11 @@ export const isAuthenticated = (req, res, next) => {
     }
     next();
 }
+
+export const isAdmin = async (req, res, next) => {
+    if (!req.auth || !req.auth.orgRole || req.auth.orgRole !== "org:admin") {
+        return res.status(401).json({ success: false, message: "Unauthorized - You are not an admin" });
+    }
+
+    return next();
+}
