@@ -122,3 +122,16 @@ export const modifyCardLabels = async (boardId, cardId, listId, labelId, checked
         return { success: false };
     }
 }
+
+
+export const updateAssignees = async (boardId, listId, cardId, assignees) =>  {
+    try {
+        const data = { boardId, cardId, listId, assignees };
+        const response = await apiClient.post('/api/card/update-assignees', data);
+
+        return { success: response.data.success, updatedCard: response.data.data };
+    } catch (error) {
+        console.log("Error in updateAssignees", error);
+        return { success: false };
+    }
+}

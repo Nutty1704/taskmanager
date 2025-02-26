@@ -38,6 +38,7 @@ const CardLabelPopover = ({ children, card }) => {
   const { boardId } = useParams();
   const { addLabel, deleteLabel, updateLabel } = useLabelStore();
   const { removeLabelFromAllCards: removeLabel } = useCardStore();
+  const queryClient = useQueryClient();
 
   const onShowForm = (initialData, isUpdate = false) => {
     setShowForm(true);
@@ -51,10 +52,10 @@ const CardLabelPopover = ({ children, card }) => {
       if (!success) {
         toast.error('Failed to save label');
       } else {
-        console.log(newLabel);
         if (id) updateLabel(newLabel);
         else addLabel(newLabel);
         setShowForm(false);
+        queryClient.invalidateQueries(['card', card._id]);
       }
     } catch (error) {
       console.error(error);

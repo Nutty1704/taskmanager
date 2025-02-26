@@ -1,8 +1,8 @@
-import { Clock, Text } from 'lucide-react'
+import { Text } from 'lucide-react'
 import React from 'react'
 import CardBadge from './CardBadge'
-import { format } from 'date-fns';
 import DateBadge from './badges/date-badge';
+import MemberBadge from './badges/member-badge';
 
 const CardBadges = ({ data }) => {
   const badges = [];
@@ -20,7 +20,13 @@ const CardBadges = ({ data }) => {
     badges.push(
       <DateBadge startDate={data.startDate} dueDate={data.dueDate} badgeSize={badgeSize} key='date-badge' />
     );
-  }  
+  }
+
+  if (data.assignedTo?.length > 0) {
+    badges.push(
+      <MemberBadge key='member-badge' data={data} badgeSize={badgeSize} />
+    )
+  }
 
   if (badges.length === 0) {
     return null;

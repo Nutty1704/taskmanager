@@ -2,6 +2,7 @@ import React from 'react'
 import CardUHLabelListItem from './labels/CardUHLabelItem';
 import CardUHDates from './labels/CardUHDates';
 import { useParams } from 'react-router-dom';
+import Members from './members/Members';
 
 export const UHHeader = ({ text }) => {
   return (
@@ -39,10 +40,16 @@ const CardUnderHeader = ({ card }) => {
       {(card.startDate || card.dueDate) &&
         (
           <UHBody>
+            <UHHeader text="Dates" />
             <CardUHDates boardId={boardId} card={card} />
           </UHBody>
         )
       }
+
+      <UHBody>
+        <UHHeader text="Members" />
+        <Members data={card} />
+      </UHBody>
     </div>
   )
 }
