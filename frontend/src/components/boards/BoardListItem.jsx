@@ -1,4 +1,4 @@
-import { updateBoard } from '@/src/lib/api/board'
+import { starBoard, unstarBoard } from '@/src/lib/api/user'
 import useBoardStore from '@/src/stores/useBoardStore'
 import { Star } from 'lucide-react'
 import React from 'react'
@@ -7,21 +7,26 @@ import { Link } from 'react-router-dom'
 
 const BoardListItem = ({ board }) => {
 
-    const { updateBoard: updateBoardLocal } = useBoardStore();
+    const { updateBoard } = useBoardStore();
 
     const toggleStar = async (e) => {
         try {
             e.preventDefault();
 
-            const prevState = board.isStarred;
-            board.isStarred = !prevState;
-            updateBoardLocal(board);
-            const { success } = await updateBoard({ id: board._id, isStarred: board.isStarred });
+            if (!board.isStarred) {
+                const { success } = await starBoard(board._id);
 
-            if (!success) {
-                board.isStarred = prevState;
-                toast.error('Failed to star board');
-                updateBoardLocal(board);
+                if (success) {
+                    updateBoard(board._id, { isStarred: true });
+                    board.isStarred = true;
+                }
+            } else {
+                const { success } = await unstarBoard(board._id);
+
+                if (success) {
+                    updateBoard(board._id, { isStarred: false });
+                    board.isStarred = false;
+                }
             }
         } catch (error) {
             console.error('Error updating board: ', error.response?.data || error.message);

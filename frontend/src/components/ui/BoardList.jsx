@@ -2,15 +2,17 @@ import { StarIcon, User2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import useBoardStore from '@/src/stores/useBoardStore'
 import { getBoards } from '@/src/lib/api/board'
+import { getStarredBoards } from '@/src/lib/api/user'
 import BoardListSkeleton from '../skeletons/BoardListSkeleton'
 import useAuthStore from '@/src/stores/useAuthStore'
 import BoardListGrid from '../boards/BoardListGrid'
+import useUserStore from '@/src/stores/useUserStore'
 
 const BoardList = () => {
   const { boards, setBoards } = useBoardStore();
   const { token } = useAuthStore();
   const [loading, setLoading] = useState(true);
-  const [starredBoards, setStarredBoards] = useState(boards.filter(board => board.isStarred));
+  const { starredBoards, setStarredBoards } = useUserStore();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -27,8 +29,26 @@ const BoardList = () => {
   }, [token]);
 
   useEffect(() => {
-    setStarredBoards(boards.filter(board => board.isStarred));
+    const fetchStarredBoards = async () => {
+      const { success, data } = await getStarredBoards();
+
+      if (success) {
+        setStarredBoards(data);
+      }
+    }
+
+    fetchStarredBoards();
   }, [boards]);
+
+  useEffect(() => {
+    boards.forEach(board => {
+      if (starredBoards.includes(board._id)) {
+        board.isStarred = true;
+      } else {
+        board.isStarred = false;
+      }
+    });
+  }, [starredBoards]);
 
   if (loading) {
     return <BoardListSkeleton />
@@ -46,7 +66,10 @@ const BoardList = () => {
             Starred Boards
           </div>
 
-          <BoardListGrid boards={boards.filter(board => board.isStarred)} showCreateBoardForm={false} />
+          <BoardListGrid
+            boards={boards.filter(board => starredBoards.includes(board._id))}
+            showCreateBoardForm={false}
+          />
         </>
       }
 

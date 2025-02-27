@@ -1,8 +1,7 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import Info from '../components/ui/Info'
 import { Separator } from '@/components/ui/separator'
 import BoardList from '../components/ui/BoardList'
-import BoardListSkeleton from '../components/skeletons/BoardListSkeleton'
 
 const BoardsPage = () => {
 
