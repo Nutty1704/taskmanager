@@ -30,10 +30,6 @@ const boardSchema = new mongoose.Schema({
     imageLinkHTML: {
         type: String,
         required: true
-    },
-    isStarred: {
-        type: Boolean,
-        default: false
     }
 }, { timestamps: true });
 

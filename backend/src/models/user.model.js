@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
             validator: mongoose.Types.ObjectId.isValid,
             message: 'Invalid card ID'
         }
+    }],
+    starredBoards: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Board',
+        default: []
     }]
 }, { timestamps: true });
 
