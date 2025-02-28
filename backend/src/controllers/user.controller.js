@@ -1,7 +1,18 @@
-import User from "../models/user.model.js";
-import { InvalidDataError, NotFoundError } from '../lib/error-util.js'
+import { InvalidDataError } from '../lib/error-util.js'
 import { verifyOrgForBoard } from '../lib/board-util.js'
 import { safeGetUser } from "../lib/user-util.js";
+
+export const getRecentBoards = async (req, res, next) => {
+    try {
+        const { orgId, userId } = req.auth;
+
+        const user = await safeGetUser(userId, orgId);
+
+        res.status(200).json({ success: true, data: user.recentBoards || [] });
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const getStarredBoards = async (req, res, next) => {
     try {

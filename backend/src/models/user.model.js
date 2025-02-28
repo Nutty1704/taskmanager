@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+export const BOARD_HISTORY_SIZE = 7;
 
 const userSchema = new mongoose.Schema({
     userId: {
@@ -20,6 +21,11 @@ const userSchema = new mongoose.Schema({
         }
     }],
     starredBoards: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Board',
+        default: []
+    }],
+    recentBoards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Board',
         default: []

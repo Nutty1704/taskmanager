@@ -5,6 +5,7 @@ import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
 import { isValidColor } from '../lib/label-util.js';
 import { createDefaultLabels, verifyOrgForBoard } from '../lib/board-util.js';
 import { createAuditLog } from '../lib/audit-util.js';
+import { addToHistory } from '../lib/user-util.js';
 
 export const createBoard = async (req, res, next) => {
     try {
@@ -94,7 +95,7 @@ export const getBoards = async (req, res, next) => {
 
 export const getBoard = async (req, res, next) => {
     try {
-        const { orgId } = req.auth;
+        const { orgId, userId } = req.auth;
         const { boardId } = req.params;
 
         const board = await Board.findOne({ _id: boardId, orgId });
@@ -103,10 +104,11 @@ export const getBoard = async (req, res, next) => {
             throw new NotFoundError("Board not found");
         }
 
+        await addToHistory(userId, orgId, board._id);
+
         res.status(200).json({ success: true, data: board });
     } catch (error) {
-        console.log("Error in getBoard controller", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        next(error);
     }
 }
 
