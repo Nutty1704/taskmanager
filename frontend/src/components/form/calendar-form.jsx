@@ -38,26 +38,28 @@ const CalendarForm = ({ initialStartDate, initialDueDate, onSubmit = async (star
     }, [selected]);
 
     useEffect(() => {
-        if (hasStartDate) {
-            setSelected((prev) => {
-                if (!hasDueDate && prev.from < prev.to) return prev;
-
-                if (hasDueDate) {
-                    return {
-                        ...prev,
-                        from: new Date(prev.to.getFullYear(), prev.to.getMonth(), prev.to.getDate() - 1)
-                    }
-                } else {
-                    return {
-                        ...prev,
-                        from: today
-                    }
-                }
-            });
-        } else {
+        if (!hasStartDate) {
             if (hasDueDate) setCalendarState(selected.to);
             else setCalendarState(today);
+            return;
         }
+    
+        setSelected((prev) => {
+            // Prevent modification if both dates exist on initial load
+            if (hasDueDate && prev.from && prev.to) return prev;
+    
+            if (hasDueDate) {
+                return {
+                    ...prev,
+                    from: new Date(prev.to.getFullYear(), prev.to.getMonth(), prev.to.getDate() - 1)
+                };
+            } else {
+                return {
+                    ...prev,
+                    from: today
+                };
+            }
+        });
     }, [hasStartDate]);
 
     useEffect(() => {
@@ -137,6 +139,14 @@ const CalendarForm = ({ initialStartDate, initialDueDate, onSubmit = async (star
         const dueDate = hasDueDate ? selected.to : null;
         await onSubmit(startDate, dueDate);
         setIsSubmitting(false);
+        console.log("SUBMITTED");
+    }
+
+    const handleRemove = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        await onSubmit(null, null);
+        setIsSubmitting(false);
     }
 
     return (
@@ -203,20 +213,17 @@ const CalendarForm = ({ initialStartDate, initialDueDate, onSubmit = async (star
                         isSubmitting={isSubmitting}
                         onChange={(e) => handleInputChange(e, true)}
                     />
-                    {/* <FormInput
-                        id='dueTime'
-                        type='text'
-                        name='dueTime'
-                        disabled={!hasDueDate}
-                        value={hasDueDate ? format(dueDate, "hh:mm a") : 'HH:MM A'}
-                    /> */}
                 </div>
 
                 <div className="w-full flex flex-col mt-3 gap-2">
                     <Button disabled={isSubmitting} type='submit' className='w-full' variant='default'>
                         Save
                     </Button>
-                    <Button onClick={() => onSubmit(null, null)} className='w-full' variant='secondary'>
+                    <Button
+                        onClick={(e) => handleRemove(e)}
+                        className='w-full'
+                        variant='secondary'
+                    >
                         Remove
                     </Button>
                 </div>
