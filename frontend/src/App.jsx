@@ -39,10 +39,10 @@ const App = () => {
     // Update token every 20 seconds
     const interval = setInterval(() => {
       fetchAndSetToken();
-    }, 30000);
+    }, 25000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [orgId]);
 
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const App = () => {
     }
 
     updateToken();
-  }, [session]);
+  }, [session, orgId]);
 
   return (
     <>
