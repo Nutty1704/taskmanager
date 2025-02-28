@@ -139,7 +139,6 @@ const CalendarForm = ({ initialStartDate, initialDueDate, onSubmit = async (star
         const dueDate = hasDueDate ? selected.to : null;
         await onSubmit(startDate, dueDate);
         setIsSubmitting(false);
-        console.log("SUBMITTED");
     }
 
     const handleRemove = async (e) => {

@@ -21,8 +21,6 @@ const CardDatesPopover = ({ children, card, boardId, ...props }) => {
                 boardId
             };
 
-            console.log(data);
-
             const { success } = await updateCard(data);
 
             if (!success) {
