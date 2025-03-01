@@ -50,6 +50,7 @@ export const formatCard = async (card) => {
 
     await card.populate('list', '_id title');
     await card.populate('labels', 'title color');
+    await card.populate('checklists');
 
     const cardObject = card.toObject();
     cardObject.list = card.list;
@@ -90,6 +91,23 @@ export const getHighestOrderCard = async (listId) => {
         return list.length ? list[0].position : 0;
     } catch (error) {
         console.log("Error in getHighestOrderCard", error);
+        throw error;
+    }
+}
+
+export const safeGetCard = async (cardId, listId, boardId, orgId) => {
+    try {
+        await verifyOrgForBoard(orgId, boardId);
+
+        const card = await Card.findById(cardId);
+
+        if (!card || card.list_id.toString() !== listId) {
+            throw new NotFoundError('Card not found');
+        }
+
+        return card;
+    } catch (error) {
+        console.error("Error in safeGetCard", error);
         throw error;
     }
 }

@@ -40,6 +40,11 @@ const cardSchema = new mongoose.Schema({
         type: String,
         ref: 'User',
         default: []
+    }],
+    checklists: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Checklist',
+        default: []
     }]
 }, { timestamps: true });
 
@@ -59,6 +64,9 @@ cardSchema.pre('deleteOne', { document: true, query: false }, async function (ne
     const cardId = this._id;
 
     try {
+        const Checklist = mongoose.model('Checklist');
+        await Checklist.deleteMany({ cardId });
+
         const User = mongoose.model('User');
         await User.updateMany(
             { cards: cardId },
@@ -78,6 +86,9 @@ cardSchema.pre('deleteMany', async function (next) {
         const cardIds = cardsToDelete.map(card => card._id);
 
         if (cardIds.length > 0) {
+            const Checklist = mongoose.model('Checklist');
+            await Checklist.deleteMany({ cardId: { $in: cardIds } });
+
             const User = mongoose.model('User');
             await User.updateMany(
                 { cards: { $in: cardIds } },

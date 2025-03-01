@@ -55,7 +55,7 @@ export const populateLists = async (lists) => {
             sort: { position: 1 }
         },
         populate: {
-            path: 'labels'
+            path: 'labels checklists'
         }
     });
 
