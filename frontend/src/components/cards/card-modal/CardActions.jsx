@@ -3,12 +3,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useCardModal } from '@/src/hooks/useCardModal'
 import { copyCard, deleteCard } from '@/src/lib/api/card'
 import useCardStore from '@/src/stores/useCardStore'
-import { Clock, CopyIcon, Tag, Trash } from 'lucide-react'
+import { Clock, CopyIcon, ListChecks, Tag, Trash } from 'lucide-react'
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
 import CardLabelPopover from './actions/label/CardLabelPopover'
 import CardDatesPopover from './actions/dates/CardDatesPopover'
+import CardChecklistPopover from './actions/checklist/CardChecklistPopover'
+import DeleteConfirmation from '../../ui/DeleteConfirmation'
 
 const CardActions = ({ data }) => {
     const { boardId } = useParams();
@@ -38,7 +40,7 @@ const CardActions = ({ data }) => {
         }
     }
 
-    const onDelete = async () => {
+    const onDelete = async (closeRef) => {
         try {
             const body = {
                 boardId,
@@ -55,6 +57,7 @@ const CardActions = ({ data }) => {
 
             removeCard(data._id, data.list_id);
             onClose();
+            closeRef.current?.click();
             toast.success('Card deleted successfully');
         } catch (error) {
             console.error('Error deleting card', error)
@@ -80,6 +83,13 @@ const CardActions = ({ data }) => {
         </Button>
       </CardLabelPopover>
 
+      <CardChecklistPopover card={data}>
+        <Button variant='secondary' size='inline' className='w-full justify-start'>
+          <ListChecks className='h-4 w-4 mr-2' />
+          Checklists
+        </Button>
+      </CardChecklistPopover>
+
       <Button
         variant='secondary' size='inline'
         className='w-full justify-start'
@@ -88,14 +98,18 @@ const CardActions = ({ data }) => {
         <CopyIcon className='h-4 w-4 mr-2' />
         Copy
       </Button>
-      <Button
-        variant='secondary' size='inline'
-        className='w-full justify-start'
-        onClick={onDelete}
+      <DeleteConfirmation
+        message="Are you sure you want to delete this card?"
+        onConfirm={onDelete}
       >
-        <Trash className='h-4 w-4 mr-2' />
-        Delete
-      </Button>
+        <Button
+          variant='secondary' size='inline'
+          className='w-full justify-start'
+        >
+          <Trash className='h-4 w-4 mr-2' />
+          Delete
+        </Button>
+      </DeleteConfirmation>
     </div>
   )
 }

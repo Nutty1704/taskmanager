@@ -10,6 +10,8 @@ import CardActions from './CardActions';
 import CardActivity from './CardActivity';
 import CardUnderHeader from './under-header/CardUnderHeader';
 import useCardStore from '@/src/stores/useCardStore';
+import CardChecklistContainer from './checklist/CardChecklistContainer';
+import { getChecklists } from '@/src/lib/api/checklist';
 
 const CardModal = () => {
   const { id, listId, isOpen, onClose } = useCardModal();
@@ -28,6 +30,14 @@ const CardModal = () => {
     queryFn: () => fetchCardAuditLog(id),
     enabled: !!id,
     select: (data) => (data.logs),
+    staleTime: 0,
+  });
+
+  const { data: checklists, isLoadingChecklists } = useQuery({
+    queryKey: ['card-checklists', id],
+    queryFn: () => getChecklists(id),
+    enabled: !!id,
+    select: (data) => (data.checklists),
     staleTime: 0,
   });
 
@@ -62,13 +72,19 @@ const CardModal = () => {
             </div>
           </DialogTitle>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 max-h-[60vh] overflow-auto">
             <div className='col-span-3'>
               <div className='w-full space-y-6'>
                 {
                   !card || isLoading
                     ? <CardDescription.Skeleton />
                     : <CardDescription data={card} />
+                }
+
+                {
+                  !card || isLoadingChecklists
+                    ? null
+                    : <CardChecklistContainer checklists={checklists} card={card} />
                 }
 
                 {!auditLog || isLoadingAudit

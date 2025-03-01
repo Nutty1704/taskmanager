@@ -3,6 +3,7 @@ import React from 'react'
 import CardBadge from './CardBadge'
 import DateBadge from './badges/date-badge';
 import MemberBadge from './badges/member-badge';
+import ChecklistBadge from './badges/checklist-badge';
 
 const CardBadges = ({ data }) => {
   const badges = [];
@@ -25,6 +26,12 @@ const CardBadges = ({ data }) => {
   if (data.assignedTo?.length > 0) {
     badges.push(
       <MemberBadge key='member-badge' data={data} badgeSize={badgeSize} />
+    )
+  }
+
+  if (data.checklists?.length > 0) {
+    badges.push(
+      <ChecklistBadge key='checklist-badge' checklists={data.checklists} badgeSize={badgeSize} />
     )
   }
 

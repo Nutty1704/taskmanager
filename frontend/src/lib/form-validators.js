@@ -1,4 +1,3 @@
-import { Description } from '@radix-ui/react-dialog';
 import { z } from 'zod';
 
 
@@ -43,3 +42,19 @@ export const cardSchema = z.object({
         invalid_type_error: "Description is required",
     }).min(3, "Description is too short"),
 });
+
+
+export const checklistSchema = z.object({
+    title: z.string({
+        required_error: "Title is required",
+        invalid_type_error: "Title is required",
+    }).min(1, "Title cannot be empty"),
+});
+
+
+export const checklistItemSchema = z.object({
+    text: z.string({
+        required_error: "Title is required",
+        invalid_type_error: "Title is required",
+    }).min(1, "Title cannot be empty"),
+})
