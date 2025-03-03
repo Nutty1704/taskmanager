@@ -71,9 +71,11 @@ export const updateList = async (req, res, next) => {
 
         const list = await safeGetPopulatedList(orgId, boardId, id);
 
-        list.title = title;
+        if (list) {
+            await List.updateOne({ _id: list._id }, { title });
+        }
 
-        await list.save();
+        list.title = title;
 
         await createAuditLog("list", "update", list._id, list.title, orgId, userId);
 
@@ -124,13 +126,15 @@ export const copyList = async (req, res, next) => {
             position: highestPosition + 1
         });
 
+        // TODO: implement a copy card method that would return a deep copy of the card
         for (const cardId of list.cards) {
             const card = await Card.findById(cardId);
             if (!card) continue;
 
             const newCard = new Card({
+                ...card.toObject(),
                 list_id: newList._id,
-                ...card
+                _id: undefined,
             });
 
             await newCard.save();
@@ -149,6 +153,7 @@ export const copyList = async (req, res, next) => {
         res.status(201).json({ success: true, data: formattedList[0] });
 
     } catch (error) {
+        console.log("Error in copyList", error);
         next(error);
     }
 }
