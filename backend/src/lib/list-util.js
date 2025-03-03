@@ -114,7 +114,7 @@ export const safeGetPopulatedList = async (orgId, boardId, listId) => {
         options: { sort: { position: 1 } },
         populate: { path: 'labels' }
     });
-    return await populateLists([list]);
+    return (await populateLists([list]))[0];
 };
 
 
