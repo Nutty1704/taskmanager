@@ -22,9 +22,14 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 app.use(cors());
-app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(clerkMiddleware({
+        publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+        secretKey: process.env.CLERK_SECRET_KEY,
+        clockSkewInMs: 15 * 1000, // 15 seconds
+        authorizedParties: ['http://localhost:5173'],
+    }));
 
 // Routes
 app.use('/api/board', isAuthenticated, boardRouter);
