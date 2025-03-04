@@ -4,6 +4,7 @@ import { createAuditLog } from '../lib/db-util/audit-util.js';
 import { InvalidDataError } from '../lib/error-util.js';
 import { fetchListsWithCards, safeGetList, populateLists, safeGetPopulatedList, getHighestOrderList } from '../lib/db-util/list-util.js';
 import { verifyOrgForBoard } from '../lib/db-util/board-util.js';
+import { getIO } from '../lib/socket.js';
 
 export const getBoardLists = async (req, res, next) => {
     try {
@@ -47,6 +48,8 @@ export const createList = async (req, res, next) => {
 
         await createAuditLog("list", "create", list._id, list.title, orgId, userId);
 
+        getIO().to(boardId).emit('listCreated', { list });
+
         res.status(201).json({ success: true, data: list });
 
     } catch (error) {
@@ -79,6 +82,9 @@ export const updateList = async (req, res, next) => {
 
         await createAuditLog("list", "update", list._id, list.title, orgId, userId);
 
+        // Emit event
+        getIO().to(boardId).emit('listUpdated', { list });
+
         res.status(200).json({ success: true, data: list });
 
     } catch (error) {
@@ -102,6 +108,9 @@ export const deleteList = async (req, res, next) => {
         await list.deleteOne();
 
         await createAuditLog("list", "delete", list._id, list.title, orgId, userId);
+
+        // Emit event
+        getIO().to(boardId).emit('listDeleted', { listId: list._id });
 
         res.status(200).json({ success: true });
         
@@ -146,11 +155,14 @@ export const copyList = async (req, res, next) => {
 
         await newList.save();
 
-        const formattedList = await populateLists([newList]);
+        const formattedList = (await populateLists([newList]))[0];
 
         await createAuditLog("list", "create", newList._id, newList.title, orgId, userId);
 
-        res.status(201).json({ success: true, data: formattedList[0] });
+        // Emit event
+        getIO().to(boardId).emit('listCreated', { list: formattedList });
+
+        res.status(201).json({ success: true, data: formattedList });
 
     } catch (error) {
         console.log("Error in copyList", error);
@@ -174,6 +186,9 @@ export const updateListPositions = async (req, res, next) => {
         for (const list of lists) {
             await List.findOneAndUpdate({ _id: list._id, board_id: boardId }, { position: list.position });
         }
+
+        // Emit event
+        getIO().to(boardId).emit('listMoved', { lists });
 
         res.status(200).json({ success: true });
 
