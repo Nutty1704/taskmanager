@@ -6,6 +6,7 @@ import { isValidColor } from '../lib/label-util.js';
 import { createDefaultLabels, verifyOrgForBoard } from '../lib/board-util.js';
 import { createAuditLog } from '../lib/audit-util.js';
 import { addToHistory } from '../lib/user-util.js';
+import { NotFoundError } from '../lib/error-util.js';
 
 export const createBoard = async (req, res, next) => {
     try {
