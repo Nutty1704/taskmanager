@@ -5,8 +5,8 @@ const useOrgAPI = () => {
     const apiHandler = useApiHandler();
     const apiClient = useApiClient();
 
-    const getAuditLogs = () => apiHandler(async (token) => {
-        const response = await apiClient.get("/api/org/audit-logs");
+    const getAuditLogs = ({ page = 1, limit = 10 }) => apiHandler(async () => {
+        const response = await apiClient.get(`/api/org/audit-logs?page=${page}&limit=${limit}`);
             
         return response.data;
     });
