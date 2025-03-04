@@ -9,7 +9,6 @@ import { cardSchema } from '@/src/lib/form-validators';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useCardStore from '@/src/stores/useCardStore';
 import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardForm = React.forwardRef(({
@@ -21,7 +20,6 @@ const CardForm = React.forwardRef(({
     const { boardId } = useParams();
     const formRef = useRef(null);
 
-    const { pushCard } = useCardStore();
     const { createCard } = useCardAPI();
 
     const { register, reset, setFocus, handleSubmit, formState: { errors, isSubmitting } } = useForm({
@@ -66,7 +64,7 @@ const CardForm = React.forwardRef(({
         try {
             const { success, newCard } = await createCard(data);
             if (success) {
-                pushCard(newCard, newCard.list_id);
+                // Local card update is handled by socket
                 toast.success(`Card ${newCard.title} created`);
                 onDisable();
             }

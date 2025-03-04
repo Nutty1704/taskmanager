@@ -67,7 +67,6 @@ const ListContainer = ({
                 reorderedCards.forEach((card, index) => {card.position = index});
                 sourceList.cards = reorderedCards;  
 
-                // TODO: server action
                 const srcList = extractMoveData(sourceList);
 
                 const { success } = await moveCard(boardId, movedCard._id, { srcList });

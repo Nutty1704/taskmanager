@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import colors from '@/src/config/labelColors.json'
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Pen } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import useCardStore from '@/src/stores/useCardStore';
 import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardLabelItem = ({ label, defaultChecked, card, onShowForm }) => {
@@ -15,7 +14,6 @@ const CardLabelItem = ({ label, defaultChecked, card, onShowForm }) => {
 
     const { modifyCardLabels } = useCardAPI();
     const queryClient = useQueryClient();
-    const { updateCard } = useCardStore();
 
     const onCheckedChange = async (checked) => {
         try {
@@ -23,10 +21,7 @@ const CardLabelItem = ({ label, defaultChecked, card, onShowForm }) => {
 
             if (success) {
                 await queryClient.invalidateQueries(['card', boardId, card.list_id, card._id]);
-                updateCard(card._id, card.list_id, {
-                    labels: checked ? [...card.labels, label]
-                            : card.labels.filter(l => l._id !== label._id)
-                        });
+                // local update is handled by socket listener
             }
         } catch (error) {
             console.error('Error updating card label', error);

@@ -1,6 +1,8 @@
 import { assignUser, formatCard, getHighestOrderCard, unassignUser, verifyCardPermission } from '../lib/db-util/card-util.js';
 import { attachUserToLogs, createAuditLog } from '../lib/db-util/audit-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
+import { getIO } from '../lib/socket.js';
+
 import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';
 import Label from '../models/label.model.js';
@@ -28,6 +30,12 @@ export const createCard = async (req, res, next) => {
 
         await createAuditLog("card", "create", card._id, card.title, orgId, userId);
 
+        // Emit event
+        getIO().to(boardId).emit('cardCreated', {
+            card: card,
+            listId
+        });
+
         res.status(201).json({ success: true, data: card });
 
     } catch (error) {
@@ -45,6 +53,7 @@ export const moveCard = async (req, res, next) => {
 
         await verifyCardPermission(orgId, boardId, srcList._id);
 
+
         srcList.cards.forEach(async ({ _id, position }) => {
             await Card.findOneAndUpdate(
                 { _id, list_id: srcList._id },
@@ -60,13 +69,20 @@ export const moveCard = async (req, res, next) => {
 
             await Card.findByIdAndUpdate(moveCardId, { list_id: destList._id });
 
-            destList.cards.forEach(async ({ _id, position }) => {
+            destList.cards.forEach(async ({ _id }, index) => {
                 await Card.findOneAndUpdate(
                     { _id, list_id: destList._id },
-                    { $set: { position: position } }
+                    { $set: { position: index } }
                 );
             });
         }
+
+        // Emit event
+        getIO().to(boardId).emit('cardMoved', {
+            moveCardId,
+            srcList,
+            destList
+        });
 
         res.status(200).json({ success: true });
 
@@ -132,6 +148,15 @@ export const updateCard = async (req, res, next) => {
             await createAuditLog("card", "update", cardId, card.title, orgId, userId);
         }
 
+        const formattedCard = await formatCard(card);
+
+        // Emit event
+        getIO().to(boardId).emit('cardUpdated', {
+            cardId,
+            listId,
+            updatedFields: formattedCard
+        });
+
         res.status(200).json({ success: true });
 
     } catch (error) {
@@ -171,6 +196,12 @@ export const copyCard = async (req, res, next) => {
 
         const formattedCard = await formatCard(newCard);
 
+        // Emit event
+        getIO().to(boardId).emit('cardCreated', {
+            card: formattedCard,
+            listId
+        });
+
         res.status(201).json({ success: true, data: formattedCard });
     } catch (error) {
         next(error)
@@ -194,6 +225,12 @@ export const deleteCard = async (req, res, next) => {
         await Label.deleteMany({ boardId, cardId });
 
         await createAuditLog("card", "delete", cardId, card.title, orgId, userId);
+
+        // Emit event
+        getIO().to(boardId).emit('cardDeleted', {
+            cardId,
+            listId
+        });
 
         res.status(200).json({ success: true });
     } catch (error) {
@@ -244,6 +281,17 @@ export const modifyCardLabel = async (req, res, next) => {
 
         await card.save();
 
+        await card.populate('labels');
+
+        // Emit event
+        getIO().to(boardId).emit('cardUpdated', {
+            cardId,
+            listId,
+            updatedFields: {
+                labels: card.labels
+            }
+        });
+
         res.status(200).json({ success: true });
     } catch (error) {
         next(error)
@@ -271,6 +319,15 @@ export const updateAssignees = async (req, res, next) => {
 
         const updatedCard = await Card.findById(cardId);
         const formattedCard = await formatCard(updatedCard);
+
+        // Emit event
+        getIO().to(boardId).emit('cardUpdated', {
+            cardId,
+            listId,
+            updatedFields: {
+                assignedTo: formattedCard.assignedTo
+            }
+        });
 
         return res.status(200).json({ success: true, data: formattedCard });
 

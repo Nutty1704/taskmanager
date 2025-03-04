@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCardModal } from '@/src/hooks/useCardModal'
-import useCardStore from '@/src/stores/useCardStore'
 import { Clock, CopyIcon, ListChecks, Tag, Trash } from 'lucide-react'
 import React from 'react'
 import toast from 'react-hot-toast'
@@ -16,7 +15,6 @@ const CardActions = ({ data }) => {
     const { boardId } = useParams();
 
     const { copyCard, deleteCard } = useCardAPI();
-    const { pushCard, removeCard } = useCardStore();
     const { onClose } = useCardModal();
 
     const onCopy = async () => {
@@ -34,7 +32,7 @@ const CardActions = ({ data }) => {
                 return;
             }
 
-            pushCard(newCard, newCard.list_id);
+            // local addition handled by socket listener
             toast.success('Card copied successfully');
         } catch (error) {
             console.error('Error copying card', error)
@@ -57,7 +55,7 @@ const CardActions = ({ data }) => {
                 return;
             }
 
-            removeCard(data._id, data.list_id);
+            // local removal handled by socket listener
             onClose();
             closeRef.current?.click();
             toast.success('Card deleted successfully');
