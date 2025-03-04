@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
-import useAuthStore from '../stores/useAuthStore';
 import DashboardNavbar from '../components/ui/DashboardNavbar';
 import BoardNavbar from '../components/ui/BoardNavbar';
 import CardModalProvider from '../components/cards/card-modal/CardModalProvider';
@@ -9,21 +8,20 @@ import useBoardAPI from '../hooks/api/useBoardAPI';
 
 const BoardLayout = ({ children }) => {
     const { boardId } = useParams();
-    const { token } = useAuthStore();
     const [board, setBoard] = useState(null);
     
     const { getBoard } = useBoardAPI();
 
     useEffect(() => {
         const fetchBoard = async () => {
-            const { success, board } = await getBoard(boardId, token);
+            const { success, board } = await getBoard(boardId);
             if (success) {
                 setBoard(board);
             }
         };
 
         fetchBoard();
-    }, [boardId, token]);
+    }, [boardId]);
 
     if (!board) {
         return null;

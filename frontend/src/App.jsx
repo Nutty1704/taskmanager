@@ -1,6 +1,6 @@
 import './App.css'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import MarketingPage from './pages/MarketingPage'
 import LoginPage from './pages/LoginPage'
@@ -15,48 +15,12 @@ import DashboardLayout from './layouts/DashboardLayout'
 import NotLoggedInLayout from './layouts/NotLoggedInLayout'
 import { Toaster } from 'react-hot-toast'
 
-import { useAuth, useSession } from '@clerk/clerk-react';
-import useAuthStore from './stores/useAuthStore'
+import { useAuth } from '@clerk/clerk-react';
 import BoardLayout from './layouts/BoardLayout'
 import BoardPage from './pages/BoardPage'
 
 const App = () => {
-  const { getToken } = useAuth();
-  const { token, setToken } = useAuthStore();
   const { userId, orgId } = useAuth();
-  const { session } = useSession();
-
-
-  const fetchAndSetToken = async () => {
-    const token = await getToken();
-    setToken(token);
-  }
-
-  useEffect(() => { 
-
-    fetchAndSetToken();
-
-    // Update token every 20 seconds
-    const interval = setInterval(() => {
-      fetchAndSetToken();
-    }, 25000);
-
-    return () => clearInterval(interval);
-  }, [orgId]);
-
-
-  useEffect(() => {
-    const updateToken = async () => {
-      if (session) {
-        const sessionToken = await session.getToken();
-        if (sessionToken !== token) {
-          setToken(sessionToken);
-        }
-      }
-    }
-
-    updateToken();
-  }, [session, orgId]);
 
   return (
     <>

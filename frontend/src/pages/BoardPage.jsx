@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useAuthStore from '../stores/useAuthStore';
 import ListContainer from '../components/lists/ListContainer';
 import useListStore from '../stores/useListStore';
 import useLabelStore from '../stores/useLabelStore';
@@ -10,7 +9,6 @@ import useBoardAPI from '../hooks/api/useBoardAPI';
 import useListAPI from '../hooks/api/useListAPI';
 
 const BoardPage = () => {
-    const { token } = useAuthStore();
     const { boardId } = useParams();
 
     const { fetchLists } = useListAPI();
@@ -37,7 +35,7 @@ const BoardPage = () => {
 
         fetchAllLabels();
         fetchAllLists();
-    }, [token, boardId]);
+    }, [boardId]);
 
     return (
         <>
