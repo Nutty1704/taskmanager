@@ -20,6 +20,9 @@ const CardComplete = ({ data, boardId }) => {
 
     const onCheckedChange = async (checked) => {
         try {
+            data.isComplete = checked;
+            updateCardLocal(data._id, data.list_id, { isComplete: checked });
+
             setIsSubmitting(true);
             const reqData = {
                 boardId,
@@ -31,7 +34,9 @@ const CardComplete = ({ data, boardId }) => {
 
             if (success) {
                 queryClient.invalidateQueries(['card', data._id]);
-                updateCardLocal(data._id, data.list_id, { isComplete: checked })
+            } else {
+                data.isComplete = !checked;
+                updateCardLocal(data._id, data.list_id, { isComplete: !checked });
             }
         } catch (error) {
             console.error(error);
