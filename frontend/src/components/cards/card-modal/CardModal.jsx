@@ -22,7 +22,7 @@ const CardModal = () => {
   const { data: card, isLoading } = useQuery({
     queryKey: ['card', boardId, listId, id], // Unique key for caching
     queryFn: () => fetchCard(boardId, listId, id),
-    enabled: !!id && !!listId,
+    enabled: isOpen && !!id && !!listId,
     select: (data) => (data.success ? data.card : {}),
     staleTime: 0,
   });
@@ -30,7 +30,7 @@ const CardModal = () => {
   const { data: auditLog, isLoadingAudit } = useQuery({
     queryKey: ['card-logs', id],
     queryFn: () => fetchCardAuditLog(id),
-    enabled: !!id,
+    enabled: isOpen && !!id,
     select: (data) => (data.logs),
     staleTime: 0,
   });
@@ -38,7 +38,7 @@ const CardModal = () => {
   const { data: checklists, isLoadingChecklists } = useQuery({
     queryKey: ['card-checklists', id],
     queryFn: () => getChecklists(id),
-    enabled: !!id,
+    enabled: isOpen && !!id,
     select: (data) => (data.checklists),
     staleTime: 0,
   });
@@ -85,7 +85,7 @@ const CardModal = () => {
 
                 {
                   !card || isLoadingChecklists
-                    ? null
+                    ? <CardChecklistContainer.Skeleton />
                     : <CardChecklistContainer checklists={checklists} card={card} />
                 }
 

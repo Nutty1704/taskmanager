@@ -13,4 +13,14 @@ const CardChecklistContainer = ({ checklists, ...props }) => {
   )
 }
 
+
+CardChecklistContainer.Skeleton = () => {
+  return (
+    <>
+      <CardChecklist.Skeleton />
+      <CardChecklist.Skeleton />
+    </>
+  )
+}
+
 export default CardChecklistContainer

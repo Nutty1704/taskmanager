@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom'
 import ChecklistTitleForm from './ChecklistTitleForm'
 import DeleteConfirmation from '@/src/components/ui/DeleteConfirmation'
 import useChecklistAPI from '@/src/hooks/api/useChecklistAPI'
+import { Skeleton } from '@/components/ui/skeleton'
 
 
 const ItemWrapper = ({ children }) => {
@@ -135,6 +136,49 @@ const CardChecklist = ({ checklist, ...props }) => {
             <AddItemForm checklist={checklist} {...props} />
           </ItemWrapper>
         </div>
+    </div>
+  )
+}
+
+CardChecklist.Skeleton = () => {
+  return (
+    <div className='w-full my-2 poppins-regular'>
+      {/* Title section with icon and delete button */}
+      <div className='flex items-center justify-between text-foreground w-full mb-2'>
+        <div className='w-full grid grid-cols-[1fr_25fr] items-center gap-x-1'>
+          <Skeleton className='h-5 w-5 rounded-md bg-secondary' />
+          <div className='w-full flex items-center justify-between'>
+            <Skeleton className='w-32 h-5 bg-secondary rounded-md' />
+            <Skeleton className='w-16 h-6 bg-secondary rounded-md' />
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Bar section */}
+      <div className='w-full grid grid-cols-[1fr_25fr] gap-2 items-center mb-4'>
+        <Skeleton className='w-6 h-4 bg-secondary rounded-sm' />
+        <Skeleton className='h-1.5 w-full bg-secondary rounded-full' />
+      </div>
+
+      {/* Checklist Items */}
+      <div className="w-full space-y-3">
+        {/* Item 1 */}
+        <div className='flex items-center ml-7 gap-x-2'>
+          <Skeleton className='h-4 w-4 rounded-sm bg-secondary' />
+          <Skeleton className='w-full h-5 bg-secondary rounded-md' />
+        </div>
+        
+        {/* Item 2 */}
+        <div className='flex items-center ml-7 gap-x-2'>
+          <Skeleton className='h-4 w-4 rounded-sm bg-secondary' />
+          <Skeleton className='w-full h-5 bg-secondary rounded-md' />
+        </div>
+
+        {/* Add Item Form */}
+        <div className='flex items-center ml-7'>
+          <Skeleton className='w-16 h-6 bg-secondary rounded-md' />
+        </div>
+      </div>
     </div>
   )
 }
