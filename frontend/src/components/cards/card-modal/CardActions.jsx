@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCardModal } from '@/src/hooks/useCardModal'
-import { copyCard, deleteCard } from '@/src/lib/api/card'
 import useCardStore from '@/src/stores/useCardStore'
 import { Clock, CopyIcon, ListChecks, Tag, Trash } from 'lucide-react'
 import React from 'react'
@@ -11,9 +10,12 @@ import CardLabelPopover from './actions/label/CardLabelPopover'
 import CardDatesPopover from './actions/dates/CardDatesPopover'
 import CardChecklistPopover from './actions/checklist/CardChecklistPopover'
 import DeleteConfirmation from '../../ui/DeleteConfirmation'
+import useCardAPI from '@/src/hooks/api/useCardAPI'
 
 const CardActions = ({ data }) => {
     const { boardId } = useParams();
+
+    const { copyCard, deleteCard } = useCardAPI();
     const { pushCard, removeCard } = useCardStore();
     const { onClose } = useCardModal();
 

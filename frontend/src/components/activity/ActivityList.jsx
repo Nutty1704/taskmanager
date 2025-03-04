@@ -1,4 +1,3 @@
-import { getAuditLogs } from '@/src/lib/api/org';
 import { useAuth } from '@clerk/clerk-react'
 import { useQuery } from '@tanstack/react-query';
 import React from 'react'
@@ -6,12 +5,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import useAuthStore from '@/src/stores/useAuthStore';
 import AcitivityItem from './AcitivityItem';
+import useOrgAPI from '@/src/hooks/api/useOrgAPI';
 
 const ActivityList = () => {
     const { orgId } = useParams();
     const auth = useAuth();
     const navigate = useNavigate();
     const { token } = useAuthStore();
+    const { getAuditLogs } = useOrgAPI();
     const { data: auditLogs, isLoading } = useQuery({
         queryKey: ['audit-logs', orgId, token],
         queryFn: getAuditLogs,

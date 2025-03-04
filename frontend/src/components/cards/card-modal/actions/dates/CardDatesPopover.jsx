@@ -1,6 +1,6 @@
 import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from '@/components/ui/popover-dialog'
 import CalendarForm from '@/src/components/form/calendar-form'
-import { updateCard } from '@/src/lib/api/card'
+import useCardAPI from '@/src/hooks/api/useCardAPI'
 import useCardStore from '@/src/stores/useCardStore'
 import { useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
@@ -9,6 +9,8 @@ import toast from 'react-hot-toast'
 
 const CardDatesPopover = ({ children, card, boardId, ...props }) => {
     const closeButton = useRef(null);
+
+    const { updateCard } = useCardAPI();
     const queryClient = useQueryClient();
     const { updateCard: updateCardLocal } = useCardStore();
 

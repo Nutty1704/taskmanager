@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button'
 import React, { useRef, useState } from 'react'
 import FormInput from './form-input';
-import { updateBoard } from '@/src/lib/api/board';
 import toast from 'react-hot-toast';
+import useBoardAPI from '@/src/hooks/api/useBoardAPI';
 
 const BoardTitleForm = ({ board, setBoard }) => {
     const formRef = useRef(null);
     const inputRef = useRef(null);
     const [isEditing, setIsEditing] = useState(false);
+    const { updateBoard } = useBoardAPI();
 
     const enableEditing = () => {
         setIsEditing(true);

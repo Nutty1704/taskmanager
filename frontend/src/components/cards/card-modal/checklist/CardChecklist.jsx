@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { removeChecklist, updateChecklist } from '@/src/lib/api/checklist'
 import ChecklistTitleForm from './ChecklistTitleForm'
 import DeleteConfirmation from '@/src/components/ui/DeleteConfirmation'
+import useChecklistAPI from '@/src/hooks/api/useChecklistAPI'
 
 
 const ItemWrapper = ({ children }) => {
@@ -29,6 +29,8 @@ const getProgressClass = (progress) => {
 const CardChecklist = ({ checklist, ...props }) => {
   const [ completedCount, setCompletedCount ] = useState(checklist.items.filter(item => item.isCompleted).length);
   const [ progress, setProgress ] = useState(0);
+
+  const { removeChecklist, updateChecklist } = useChecklistAPI();
   const queryClient = useQueryClient();
   const { boardId } = useParams();
 

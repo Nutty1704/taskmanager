@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useAuthStore from '../stores/useAuthStore';
-import { fetchLists } from '../lib/api/list';
 import ListContainer from '../components/lists/ListContainer';
 import useListStore from '../stores/useListStore';
-import { getBoardLabels } from '../lib/api/board';
 import useLabelStore from '../stores/useLabelStore';
 import { Helmet } from 'react-helmet';
 import useBoardStore from '../stores/useBoardStore';
+import useBoardAPI from '../hooks/api/useBoardAPI';
+import useListAPI from '../hooks/api/useListAPI';
 
 const BoardPage = () => {
     const { token } = useAuthStore();
     const { boardId } = useParams();
+
+    const { fetchLists } = useListAPI();
+    const { getBoardLabels } = useBoardAPI();
     const { setLists } = useListStore();
     const { setLabels } = useLabelStore();
     const { boards } = useBoardStore();

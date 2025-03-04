@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox'
-import { removeItem, updateItem } from '@/src/lib/api/checklist';
+import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react'
@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete }) => {
   const [isChecked, setIsChecked] = useState(item.isCompleted);
   const queryClient = useQueryClient();
+  const { removeItem, updateItem } = useChecklistAPI();
 
   const onCheckedChange = async (checked) => {
     setIsChecked(checked);
@@ -20,7 +21,6 @@ const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete }) 
         if (checked) onComplete();
         else onIncomplete();
 
-        console.log('Item updated');
         queryClient.invalidateQueries(['card-checklists', cardId]);
       } else {
         setIsChecked(!checked);

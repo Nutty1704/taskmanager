@@ -1,14 +1,15 @@
 import { User2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import useBoardStore from '@/src/stores/useBoardStore';
-import { getBoards } from '@/src/lib/api/board';
-import { getRecentBoards, getStarredBoards } from '@/src/lib/api/user';
 import BoardListSkeleton from '../skeletons/BoardListSkeleton';
 import useAuthStore from '@/src/stores/useAuthStore';
 import BoardListGrid from '../boards/BoardListGrid';
 import useUserStore from '@/src/stores/useUserStore';
 import StarredBoards from '../boards/StarredBoards';
 import RecentBoards from '../boards/RecentBoards';
+import useUserAPI from '@/src/hooks/api/useUserAPI';
+import useBoardAPI from '@/src/hooks/api/useBoardAPI';
+import { useAuth } from '@clerk/clerk-react';
 
 const BoardList = () => {
   const { boards, setBoards } = useBoardStore();
@@ -17,7 +18,13 @@ const BoardList = () => {
   const { starredBoards, setStarredBoards } = useUserStore();
   const [recentBoards, setRecentBoards] = useState([]);
 
+  const { isLoaded, isSignedIn } = useAuth();
+  const { getBoards } = useBoardAPI();
+  const { getStarredBoards, getRecentBoards } = useUserAPI();
+
   useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+
     const fetchBoards = async () => {
       setLoading(true);
       const { success, boards } = await getBoards();
@@ -26,7 +33,7 @@ const BoardList = () => {
     };
 
     fetchBoards();
-  }, [token]);
+  }, [token, isLoaded, isSignedIn]);
 
   useEffect(() => {
     const fetchStarredBoards = async () => {

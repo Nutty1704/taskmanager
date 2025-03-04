@@ -1,5 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { updateCard } from '@/src/lib/api/card';
 import { cardSchema } from '@/src/lib/form-validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlignLeft } from 'lucide-react'
@@ -12,12 +11,14 @@ import FormTextArea from '../../form/form-text-area';
 import FormSubmit from '../../form/form-submit';
 import { Button } from '@/components/ui/button';
 import { useQueryClient } from '@tanstack/react-query';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardDescription = ({ data }) => {
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef(null);
     const { boardId } = useParams();
     const queryClient = useQueryClient();
+    const { updateCard } = useCardAPI();
     const { register, reset, setFocus, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(cardSchema.pick({ description: true })),
         defaultValues: {

@@ -6,19 +6,19 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cardSchema } from '@/src/lib/form-validators';
-import { updateCard } from '@/src/lib/api/card';
 import toast from 'react-hot-toast';
 import { useCardModal } from '@/src/hooks/useCardModal';
 import { useEventListener } from 'usehooks-ts';
 import { useQueryClient } from '@tanstack/react-query';
 import CardComplete from './actions/complete/CardComplete';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const Header = ({ data }) => {
-    // TODO: Add isEditing state and only show form when isEditing is true
     const [ title, setTitle ] = useState(data.title);
     const { boardId } = useParams();
     const formRef = useRef(null);
     const { isOpen } = useCardModal();
+    const { updateCard } = useCardAPI();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
       resolver: zodResolver(cardSchema.pick({ title: true })),
       defaultValues: {

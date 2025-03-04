@@ -4,14 +4,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Pen } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { modifyCardLabels } from '@/src/lib/api/card';
 import { useParams } from 'react-router-dom';
 import useCardStore from '@/src/stores/useCardStore';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardLabelItem = ({ label, defaultChecked, card, onShowForm }) => {
-    const checkboxRef = useRef(null);
     const [ isChecked, setIsChecked ] = useState(defaultChecked);
+    const checkboxRef = useRef(null);
     const { boardId } = useParams();
+
+    const { modifyCardLabels } = useCardAPI();
     const queryClient = useQueryClient();
     const { updateCard } = useCardStore();
 

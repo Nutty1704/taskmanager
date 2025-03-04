@@ -4,17 +4,18 @@ import { useEventListener } from 'usehooks-ts';
 import FormInput from '../form/form-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listSchema } from '@/src/lib/form-validators';
-import { updateList } from '@/src/lib/api/list';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ListOptions from './ListOptions';
 import { Button } from '@/components/ui/button';
 import { Minimize2, Maximize2 } from 'lucide-react';
+import useListAPI from '@/src/hooks/api/useListAPI';
 
 const ListHeader = ({ data, onAddCard, isCollapsed, toggleCollapse }) => {
     const [isEditing, setIsEditing] = useState(false);
     const formRef = useRef(null);
 
+    const { updateList } = useListAPI();
     const { register, handleSubmit, reset, setFocus, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(listSchema),
         defaultValues: {
@@ -42,7 +43,7 @@ const ListHeader = ({ data, onAddCard, isCollapsed, toggleCollapse }) => {
             return;
         }
 
-        const { success, updatedList } = await updateList(boardId, formData);
+        const { success, updatedList } = await updateList(boardId, formData.id, formData.title);
 
         if (success) {
             toast.success(`Renamed list "${data.title}" to "${updatedList.title}"`);

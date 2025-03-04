@@ -3,7 +3,6 @@ import { useCardModal } from '@/src/hooks/useCardModal'
 import React from 'react'
 import { useParams } from 'react-router-dom';
 import CardHeader from './CardHeader';
-import { fetchCard, fetchCardAuditLog } from '@/src/lib/api/card';
 import { useQuery, useQueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CardDescription from './CardDescription';
 import CardActions from './CardActions';
@@ -11,18 +10,21 @@ import CardActivity from './CardActivity';
 import CardUnderHeader from './under-header/CardUnderHeader';
 import useCardStore from '@/src/stores/useCardStore';
 import CardChecklistContainer from './checklist/CardChecklistContainer';
-import { getChecklists } from '@/src/lib/api/checklist';
+import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardModal = () => {
   const { id, listId, isOpen, onClose } = useCardModal();
   const { boardId } = useParams();
 
+  const { fetchCard, fetchCardAuditLog } = useCardAPI();
+  const { getChecklists } = useChecklistAPI();
   const { data: card, isLoading } = useQuery({
     queryKey: ['card', boardId, listId, id], // Unique key for caching
     queryFn: () => fetchCard(boardId, listId, id),
-    enabled: !!id && !!listId, // Only fetch if id and listId exist
-    select: (data) => (data.success ? data.card : {}), // Extract card data
-    staleTime: 0, // Always fetch fresh data when id changes
+    enabled: !!id && !!listId,
+    select: (data) => (data.success ? data.card : {}),
+    staleTime: 0,
   });
 
   const { data: auditLog, isLoadingAudit } = useQuery({
@@ -72,8 +74,8 @@ const CardModal = () => {
             </div>
           </DialogTitle>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 max-h-[60vh] overflow-auto">
-            <div className='col-span-3'>
+          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 max-h-[60vh]">
+            <div className='col-span-3 overflow-auto'>
               <div className='w-full space-y-6'>
                 {
                   !card || isLoading

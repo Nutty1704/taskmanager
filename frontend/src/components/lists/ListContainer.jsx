@@ -3,14 +3,17 @@ import ListForm from './ListForm'
 import useListStore from '@/src/stores/useListStore'
 import ListItem from './ListItem';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import { updateListPositions } from '@/src/lib/api/list';
-import { moveCard, extractMoveData } from '@/src/lib/api/card';
+import { extractMoveData } from '@/src/lib/api/card-util';
 import toast from 'react-hot-toast';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
+import useListAPI from '@/src/hooks/api/useListAPI';
 
 const ListContainer = ({
     boardId,
 }) => {
     const { lists, setLists } = useListStore();
+    const { updateListPositions } = useListAPI();
+    const { moveCard } = useCardAPI();
 
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);

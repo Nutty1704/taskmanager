@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import React  from 'react'
-import { deleteList } from '@/src/lib/api/list'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FormInput from '../form/form-input'
@@ -9,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { getConfirmationSchema } from '@/src/lib/form-validators'
 import FormSubmit from '../form/form-submit'
 import useListStore from '@/src/stores/useListStore'
+import useListAPI from '@/src/hooks/api/useListAPI'
 
 
 const ListDeleteForm = ({
@@ -18,6 +18,8 @@ const ListDeleteForm = ({
     ...props
 }) => {
     const { boardId } = useParams();
+
+    const { deleteList } = useListAPI();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(getConfirmationSchema(title)),
         defaultValues: {

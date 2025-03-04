@@ -9,8 +9,8 @@ import { cardSchema } from '@/src/lib/form-validators';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createCard } from '@/src/lib/api/card';
 import useCardStore from '@/src/stores/useCardStore';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardForm = React.forwardRef(({
     listId,
@@ -22,6 +22,7 @@ const CardForm = React.forwardRef(({
     const formRef = useRef(null);
 
     const { pushCard } = useCardStore();
+    const { createCard } = useCardAPI();
 
     const { register, reset, setFocus, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(cardSchema.pick({ title: true, listId: true, boardId: true })),

@@ -3,11 +3,11 @@ import React from 'react'
 import MembersPopover from './MembersPopover'
 import { Button } from '@/components/ui/button'
 import { useOrganization, useUser } from '@clerk/clerk-react'
-import { updateAssignees } from '@/src/lib/api/card'
 import { useParams } from 'react-router-dom'
 import ToolTip from '@/src/components/ui/ToolTip'
 import { useQueryClient } from '@tanstack/react-query'
 import useCardStore from '@/src/stores/useCardStore'
+import useCardAPI from '@/src/hooks/api/useCardAPI'
 
 const Members = ({ data }) => {
     const members = data.assignedTo;
@@ -17,6 +17,7 @@ const Members = ({ data }) => {
         }
     });
 
+    const { updateAssignees } = useCardAPI();
     const { boardId } = useParams();
     const queryClient = useQueryClient();
     const { updateCard: updateCardLocal } = useCardStore();

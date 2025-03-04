@@ -10,8 +10,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listSchema } from '@/src/lib/form-validators';
 import useListStore from '@/src/stores/useListStore';
-import { createList } from '@/src/lib/api/list';
 import toast from 'react-hot-toast';
+import useListAPI from '@/src/hooks/api/useListAPI';
 
 const ListForm = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -19,6 +19,7 @@ const ListForm = () => {
     const formRef = useRef(null);
     const { boardId } = useParams();
 
+    const { createList } = useListAPI();
     const { addList } = useListStore();
 
     const { register, reset, handleSubmit, setFocus,
@@ -53,7 +54,7 @@ const ListForm = () => {
     useOnClickOutside(formRef, disableEditing);
 
     const onSubmit = async (data) => {
-        const { success, newList } = await createList(data);
+        const { success, newList } = await createList(data.boardId, data.title);
         if (success) {
             addList(newList);
             disableEditing();

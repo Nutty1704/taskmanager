@@ -1,15 +1,17 @@
 import { Checkbox } from '@/components/ui/checkbox'
-import { updateCard } from '@/src/lib/api/card';
 import useCardStore from '@/src/stores/useCardStore';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react'
 import ToolTip from '@/src/components/ui/ToolTip';
+import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardComplete = ({ data, boardId }) => {
     const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const [ tooltipText, setTooltipText ] = useState('');
+    
+    const { updateCard } = useCardAPI();
     const queryClient = useQueryClient();
     const { updateCard: updateCardLocal } = useCardStore();
-    const [ tooltipText, setTooltipText ] = useState('');
 
     useEffect(() => {
         if (data.isComplete) setTooltipText('Mark Incomplete');

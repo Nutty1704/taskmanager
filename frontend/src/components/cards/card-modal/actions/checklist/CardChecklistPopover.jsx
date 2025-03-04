@@ -1,7 +1,7 @@
 import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from '@/components/ui/popover-dialog'
 import FormInput from '@/src/components/form/form-input';
 import FormSubmit from '@/src/components/form/form-submit';
-import { createChecklist } from '@/src/lib/api/checklist';
+import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
 import { checklistSchema } from '@/src/lib/form-validators';
 import useCardStore from '@/src/stores/useCardStore';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom';
 
 const CardChecklistPopover = ({ children, card }) => {
     const { boardId } = useParams();
+
+    const { createChecklist } = useChecklistAPI();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(checklistSchema.pick({ title: true })) ,
         defaultValues: {

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import FormInput from '@/src/components/form/form-input';
 import FormSubmit from '@/src/components/form/form-submit';
-import { addItem } from '@/src/lib/api/checklist';
+import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
 import { checklistItemSchema } from '@/src/lib/form-validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 
 const AddItemForm = ({ checklist, card }) => {
     const [ showForm, setShowForm ] = useState(false);
+    const { addItem } = useChecklistAPI();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
         resolver: zodResolver(checklistItemSchema.pick({ text: true })),
         defaultValues: {

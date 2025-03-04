@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import React from 'react'
-import { deleteBoard } from '@/src/lib/api/board'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FormInput from './form-input'
@@ -8,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getConfirmationSchema } from '@/src/lib/form-validators'
 import FormSubmit from './form-submit'
+import useBoardAPI from '@/src/hooks/api/useBoardAPI'
 
 
 const DeleteBoardConfirmationModal = ({
@@ -16,6 +16,7 @@ const DeleteBoardConfirmationModal = ({
     id
 }) => {
     const navigate = useNavigate();
+    const { deleteBoard } = useBoardAPI();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         resolver: zodResolver(getConfirmationSchema(title)),
         defaultValues: {

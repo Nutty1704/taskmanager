@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { getRandomImages } from '@/src/lib/api/unsplash';
 import { Check, Loader2 } from 'lucide-react';
 import { defaultImages } from '@/src/config/images';
 import FormErrors from './form-errors';
+import useUnsplashAPI from '@/src/hooks/api/useUnsplashAPI';
 
 
 const FormPicker = ({
@@ -14,6 +14,7 @@ const FormPicker = ({
     const [images, setImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedImageId, setSelectedImageId] = useState(null);
+    const { getRandomImages } = useUnsplashAPI();
 
     useEffect(() => {
         const fetchImages = async () => {

@@ -10,9 +10,9 @@ import { MoreHorizontal, X } from 'lucide-react'
 import ListDeleteForm from './ListDeleteForm'
 import { Separator } from '@/components/ui/separator'
 import toast from 'react-hot-toast'
-import { copyList } from '@/src/lib/api/list'
 import { useParams } from 'react-router-dom'
 import useListStore from '@/src/stores/useListStore'
+import useListAPI from '@/src/hooks/api/useListAPI'
 
 const ListOptions = ({
     data,
@@ -20,6 +20,8 @@ const ListOptions = ({
 }) => {
     const closeRef = useRef(null);
     const { boardId } = useParams();
+
+    const { copyList } = useListAPI();
     const { addList } = useListStore();
 
     const onCopy = async () => {

@@ -5,11 +5,11 @@ import { ArrowLeft, X } from 'lucide-react'
 import CardLabelSearch from './CardLabelSearch'
 import CardLabelForm from './form/CardLabelForm'
 import { useParams } from 'react-router-dom'
-import { deleteBoardLabel, updateBoardLabel } from '@/src/lib/api/board'
 import toast from 'react-hot-toast'
 import useLabelStore from '@/src/stores/useLabelStore'
 import { useQueryClient } from '@tanstack/react-query'
 import useCardStore from '@/src/stores/useCardStore'
+import useBoardAPI from '@/src/hooks/api/useBoardAPI'
 
 
 const CardLabelPopoverTitle = ({ text, showForm, setShowForm }) => {
@@ -35,10 +35,13 @@ const CardLabelPopover = ({ children, card }) => {
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formInitialData, setFormInitialData] = useState({});
+  
   const { boardId } = useParams();
   const { addLabel, deleteLabel, updateLabel } = useLabelStore();
   const { removeLabelFromAllCards: removeLabel } = useCardStore();
   const queryClient = useQueryClient();
+  const { deleteBoardLabel, updateBoardLabel } = useBoardAPI();
+
 
   const onShowForm = (initialData, isUpdate = false) => {
     setShowForm(true);

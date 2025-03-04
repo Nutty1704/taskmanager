@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
-import { getBoard } from '../lib/api/board';
 import useAuthStore from '../stores/useAuthStore';
 import DashboardNavbar from '../components/ui/DashboardNavbar';
 import BoardNavbar from '../components/ui/BoardNavbar';
 import CardModalProvider from '../components/cards/card-modal/CardModalProvider';
 import { QueryProvider } from '../lib/query-provider';
+import useBoardAPI from '../hooks/api/useBoardAPI';
 
 const BoardLayout = ({ children }) => {
     const { boardId } = useParams();
     const { token } = useAuthStore();
     const [board, setBoard] = useState(null);
+    
+    const { getBoard } = useBoardAPI();
 
     useEffect(() => {
         const fetchBoard = async () => {

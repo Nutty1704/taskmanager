@@ -1,13 +1,13 @@
-import { starBoard, unstarBoard } from '@/src/lib/api/user'
+import useUserAPI from '@/src/hooks/api/useUserAPI'
 import useBoardStore from '@/src/stores/useBoardStore'
 import { Star } from 'lucide-react'
 import React from 'react'
-import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 
 const BoardListItem = ({ board }) => {
 
     const { updateBoard } = useBoardStore();
+    const { starBoard, unstarBoard } = useUserAPI();
 
     const toggleStar = async (e) => {
         try {

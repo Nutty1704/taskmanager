@@ -10,9 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { boardSchema } from '@/src/lib/form-validators'
 import toast from 'react-hot-toast'
 import FormPicker from './form-picker'
-
-import { createBoard } from '@/src/lib/api/board'
 import useBoardStore from '@/src/stores/useBoardStore'
+import useBoardAPI from '@/src/hooks/api/useBoardAPI'
 
 const BoardFormPopover = ({
     children,
@@ -31,6 +30,7 @@ const BoardFormPopover = ({
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const { addBoard } = useBoardStore();
+    const { createBoard } = useBoardAPI();
 
     const onSubmit = async (data) => {
         const title = data.title.trim();
