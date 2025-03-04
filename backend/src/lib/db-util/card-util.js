@@ -1,12 +1,12 @@
-import { getUsersForCard } from './clerk-util.js';
+import { getUsersForCard } from '../clerk-util.js';
 import { verifyOrgForBoard } from './board-util.js'
 
-import Card from '../models/card.model.js';
-import User from '../models/user.model.js';
-import List from '../models/list.model.js';
-import Label from '../models/label.model.js';
+import Card from '../../models/card.model.js';
+import User from '../../models/user.model.js';
+import List from '../../models/list.model.js';
+import Label from '../../models/label.model.js';
 
-import { NotFoundError, UnauthorizedError } from './error-util.js';
+import { NotFoundError, UnauthorizedError } from '../error-util.js';
 
 
 /**

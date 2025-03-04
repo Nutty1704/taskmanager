@@ -1,7 +1,7 @@
-import Board from "../models/board.model.js";
-import Label from "../models/label.model.js";
+import Board from "../../models/board.model.js";
+import Label from "../../models/label.model.js";
 
-import { NotFoundError, UnauthorizedError } from "./error-util.js";
+import { NotFoundError, UnauthorizedError } from "../error-util.js";
 
 export const verifyOrgForBoard = async (orgId, boardId) => {
     try {

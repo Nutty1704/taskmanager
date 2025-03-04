@@ -1,5 +1,5 @@
-import { assignUser, formatCard, getHighestOrderCard, unassignUser, verifyCardPermission } from '../lib/card-util.js';
-import { attachUserToLogs, createAuditLog } from '../lib/audit-util.js';
+import { assignUser, formatCard, getHighestOrderCard, unassignUser, verifyCardPermission } from '../lib/db-util/card-util.js';
+import { attachUserToLogs, createAuditLog } from '../lib/db-util/audit-util.js';
 import { InvalidDataError, NotFoundError } from '../lib/error-util.js';
 import AuditLog from '../models/audit-log.model.js';
 import Card from '../models/card.model.js';

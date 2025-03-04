@@ -1,6 +1,6 @@
-import { fetchUsersFromClerk } from "./clerk-util.js";
+import { fetchUsersFromClerk } from "../clerk-util.js";
 
-import AuditLog, { auditLogActions, auditLogEntityTypes } from "../models/audit-log.model.js";
+import AuditLog, { auditLogActions, auditLogEntityTypes } from "../../models/audit-log.model.js";
 
 export const attachUserToLogs = async (logs) => {
     try {

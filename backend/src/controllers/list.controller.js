@@ -1,9 +1,9 @@
 import List from '../models/list.model.js';
 import Card from '../models/card.model.js';
-import { createAuditLog } from '../lib/audit-util.js';
+import { createAuditLog } from '../lib/db-util/audit-util.js';
 import { InvalidDataError } from '../lib/error-util.js';
-import { fetchListsWithCards, safeGetList, populateLists, safeGetPopulatedList, getHighestOrderList } from '../lib/list-util.js';
-import { verifyOrgForBoard } from '../lib/board-util.js';
+import { fetchListsWithCards, safeGetList, populateLists, safeGetPopulatedList, getHighestOrderList } from '../lib/db-util/list-util.js';
+import { verifyOrgForBoard } from '../lib/db-util/board-util.js';
 
 export const getBoardLists = async (req, res, next) => {
     try {

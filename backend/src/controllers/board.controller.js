@@ -2,10 +2,10 @@ import Board from '../models/board.model.js'
 import Label from '../models/label.model.js';
 
 import { InvalidDataError, UnauthorizedError } from '../lib/error-util.js';
-import { isValidColor } from '../lib/label-util.js';
-import { createDefaultLabels, verifyOrgForBoard } from '../lib/board-util.js';
-import { createAuditLog } from '../lib/audit-util.js';
-import { addToHistory } from '../lib/user-util.js';
+import { isValidColor } from '../lib/db-util/label-util.js';
+import { createDefaultLabels, verifyOrgForBoard } from '../lib/db-util/board-util.js';
+import { createAuditLog } from '../lib/db-util/audit-util.js';
+import { addToHistory } from '../lib/db-util/user-util.js';
 import { NotFoundError } from '../lib/error-util.js';
 
 export const createBoard = async (req, res, next) => {

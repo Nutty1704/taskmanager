@@ -1,4 +1,4 @@
-import User, { BOARD_HISTORY_SIZE} from "../models/user.model.js";
+import User, { BOARD_HISTORY_SIZE} from "../../models/user.model.js";
 
 
 export const addToHistory = async (userId, orgId, boardId) => {

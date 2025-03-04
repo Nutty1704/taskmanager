@@ -1,6 +1,5 @@
-import Card from "../models/card.model.js";
-import Checklist from "../models/checklist.model.js";
-import { NotFoundError } from "./error-util.js";
+import Checklist from "../../models/checklist.model.js";
+import { NotFoundError } from "../error-util.js";
 
 /**
  * Retrieves a checklist by its ID, first verifying that the checklist

@@ -1,4 +1,4 @@
-import labelColors from '../config/labelColors.json' with { type: 'json' };
+import labelColors from '../../config/labelColors.json' with { type: 'json' };
 
 /**
  * Determines if a given color is valid.

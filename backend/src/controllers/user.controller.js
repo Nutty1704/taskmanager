@@ -1,6 +1,6 @@
 import { InvalidDataError } from '../lib/error-util.js'
-import { verifyOrgForBoard } from '../lib/board-util.js'
-import { safeGetUser } from "../lib/user-util.js";
+import { verifyOrgForBoard } from '../lib/db-util/board-util.js'
+import { safeGetUser } from "../lib/db-util/user-util.js";
 
 export const getRecentBoards = async (req, res, next) => {
     try {

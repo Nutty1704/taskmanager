@@ -1,7 +1,7 @@
 import Checklist from "../models/checklist.model.js";
-import { safeGetCard } from "../lib/card-util.js";
+import { safeGetCard } from "../lib/db-util/card-util.js";
 import { InvalidDataError, NotFoundError } from "../lib/error-util.js";
-import { safeGetChecklist } from "../lib/checklist-util.js";
+import { safeGetChecklist } from "../lib/db-util/checklist-util.js";
 
 
 export const createChecklist = async (req, res, next) => {

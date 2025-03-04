@@ -1,8 +1,8 @@
-import List from "../models/list.model.js";
-import { getUsersForCard } from "./clerk-util.js";
+import List from "../../models/list.model.js";
+import { getUsersForCard } from "../clerk-util.js";
 import { verifyOrgForBoard } from "./board-util.js";
 
-import { NotFoundError, UnauthorizedError } from "./error-util.js";
+import { NotFoundError, UnauthorizedError } from "../error-util.js";
 
 
 /**
