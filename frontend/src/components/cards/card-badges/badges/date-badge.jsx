@@ -3,29 +3,29 @@ import { format } from 'date-fns'
 import CardBadge from '../CardBadge';
 import { Clock } from 'lucide-react';
 
-const DateBadge = ({ startDate, dueDate, badgeSize }) => {
-    if (!startDate && !dueDate) return null; // No dates, no badge
 
-    const start = startDate ? new Date(startDate) : null;
-    const due = dueDate ? new Date(dueDate) : null;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize for date comparisons
-
-    const daysRemaining = due ? Math.ceil((due - Date.now()) / 86400000) : null;
-    const startsInFuture = start && start > today;
-
+function getBadgeDetails({ start, due,
+    isCompleted, daysRemaining,
+    startsInFuture }) {
     let badgeText = ''; // Tooltip text
+    let badgeClass = 'text-muted-foreground';
     let displayText = ''; // Text inside badge
-    let badgeClass = 'text-muted-foreground'; // Default color
 
     if (start && due) {
-        // Both start and due date exist → Tooltip follows due date logic
+        // Both start and due date exist
         badgeText =
             daysRemaining < 0
                 ? 'This card is past due.'
                 : daysRemaining === 0
                     ? 'This card is due today.'
                     : `This card is due in ${daysRemaining} day(s).`;
+
+        badgeClass =
+            daysRemaining < 0
+                ? 'text-destructive'
+                : daysRemaining < 2
+                    ? 'text-amber-400'
+                    : 'text-muted-foreground';
 
         displayText = `${format(start, 'MMM d')} - ${format(due, 'MMM d')}`;
     } else if (start) {
@@ -46,18 +46,47 @@ const DateBadge = ({ startDate, dueDate, badgeSize }) => {
                     ? 'This card is due today.'
                     : `This card is due in ${daysRemaining} day(s).`;
 
-        displayText = format(due, 'MMM d');
-    }
-
-    // Apply due date styles only when due date exists
-    if (due) {
         badgeClass =
             daysRemaining < 0
                 ? 'text-destructive'
                 : daysRemaining < 2
                     ? 'text-amber-400'
                     : 'text-muted-foreground';
+
+        displayText = format(due, 'MMM d');
     }
+
+    if (isCompleted) {
+        badgeText = 'This card is completed.';
+        badgeClass = 'text-green-500';
+    }
+
+    return { badgeText, badgeClass, displayText };
+}
+
+const DateBadge = ({ isCompleted, startDate, dueDate, badgeSize }) => {
+    if (!startDate && !dueDate) return null; // No dates, no badge
+
+    const start = startDate ? new Date(startDate) : null;
+    const due = dueDate ? new Date(dueDate) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize for date comparisons
+
+    const daysRemaining = due ? Math.ceil((due - Date.now()) / 86400000) : null;
+    const startsInFuture = start && start > today;
+
+    const { 
+        badgeText, 
+        badgeClass, 
+        displayText 
+    } = getBadgeDetails({ 
+        start, 
+        due, 
+        isCompleted, 
+        daysRemaining, 
+        startsInFuture 
+    });
+    
 
     return (
         <CardBadge text={badgeText}>

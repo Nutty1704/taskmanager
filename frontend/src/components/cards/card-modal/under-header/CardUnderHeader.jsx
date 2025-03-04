@@ -1,12 +1,15 @@
 import React from 'react'
 import CardUHLabelListItem from './labels/CardUHLabelItem';
-import CardUHDates from './labels/CardUHDates';
+import CardUHDates from './dates/CardUHDates';
 import { useParams } from 'react-router-dom';
 import Members from './members/Members';
 
-export const UHHeader = ({ text }) => {
+export const UHHeader = ({ text, children }) => {
   return (
-    <span className='text-xs font-medium text-muted-foreground'>{text}</span>
+    <div className='flex items-center gap-1.5'>
+      <span className='text-xs font-medium text-muted-foreground'>{text}</span>
+      {children}
+    </div>
   )
 }
 
@@ -40,7 +43,6 @@ const CardUnderHeader = ({ card }) => {
       {(card.startDate || card.dueDate) &&
         (
           <UHBody>
-            <UHHeader text="Dates" />
             <CardUHDates boardId={boardId} card={card} />
           </UHBody>
         )

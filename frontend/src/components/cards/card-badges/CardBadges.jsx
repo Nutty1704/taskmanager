@@ -19,7 +19,7 @@ const CardBadges = ({ data }) => {
 
   if (data.startDate || data.dueDate) {
     badges.push(
-      <DateBadge startDate={data.startDate} dueDate={data.dueDate} badgeSize={badgeSize} key='date-badge' />
+      <DateBadge isCompleted={data.isComplete} startDate={data.startDate} dueDate={data.dueDate} badgeSize={badgeSize} key='date-badge' />
     );
   }
 
