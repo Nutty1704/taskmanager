@@ -29,7 +29,7 @@ const ListOptions = ({
             const { success, newList } = await copyList(boardId, data._id);
 
             if (success) {
-                addList(newList);
+                // Local addition handled by socket listener
                 toast.success(`Copied list ${data.title}`);
                 onSuccess();
             } else {
@@ -47,7 +47,7 @@ const ListOptions = ({
     }
 
     const onSuccess = () => {
-        closeRef.current.click();
+        closeRef.current?.click();
     }
 
     return (

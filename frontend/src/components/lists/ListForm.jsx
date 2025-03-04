@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listSchema } from '@/src/lib/form-validators';
-import useListStore from '@/src/stores/useListStore';
 import toast from 'react-hot-toast';
 import useListAPI from '@/src/hooks/api/useListAPI';
 
@@ -20,7 +19,6 @@ const ListForm = () => {
     const { boardId } = useParams();
 
     const { createList } = useListAPI();
-    const { addList } = useListStore();
 
     const { register, reset, handleSubmit, setFocus,
         formState: { errors, isSubmitting },
@@ -56,7 +54,7 @@ const ListForm = () => {
     const onSubmit = async (data) => {
         const { success, newList } = await createList(data.boardId, data.title);
         if (success) {
-            addList(newList);
+            // Local addition handled by socket listener
             disableEditing();
             toast.success(`List ${newList.title} created successfully`);
         } else {

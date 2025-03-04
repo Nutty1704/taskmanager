@@ -8,7 +8,7 @@ import { useCardModal } from "./useCardModal";
 const useSocketListeners = (boardId) => {
     const queryClient = useQueryClient();
     const { pushCard, removeCard, updateCard } = useCardStore();
-    const { setLists } = useListStore();
+    const { addList, removeList, setLists } = useListStore();
 
     const cardCreatedListener = useCallback(({ card, listId }) => {
         pushCard(card, listId);
@@ -38,7 +38,6 @@ const useSocketListeners = (boardId) => {
         });
     }, [queryClient, updateCard]);
 
-    // TODO: Fix card duplication on the dragging user's end.
     const cardMovedListener = useCallback(({ moveCardId, srcList, destList }) => {
         const lists = useListStore.getState().lists;
         const srcListLocal = lists.find(list => list._id === srcList._id);
@@ -64,6 +63,34 @@ const useSocketListeners = (boardId) => {
 
         setLists([...lists]);
     }, [setLists]);
+
+    const listCreatedListener = useCallback(({ list }) => {
+        addList(list);
+    }, [addList]);
+
+    const listDeletedListener = useCallback(({ listId }) => {
+        removeList(listId);
+    }, [removeList]);
+
+    const listUpdatedListener = useCallback(({ list }) => {
+        const lists = useListStore.getState().lists;
+
+        const newLists = lists.map(l => l._id === list._id ? list : l);
+        setLists(newLists);
+    }, [ setLists ]);
+
+    const listMovedListener = useCallback(({ lists }) => {
+        const stateLists = useListStore.getState().lists;
+        const positionMap = getListsPosMap(lists);
+
+        console.log("Map: ", positionMap);
+        console.log("Before update: ", stateLists);
+        stateLists.forEach(l => l.position = positionMap[l._id]);
+        const newLists = stateLists.sort((a, b) => a.position - b.position);
+        console.log("After update: ", newLists);
+
+        setLists(newLists);
+    }, [ setLists ]);
     
 
     useEffect(() => {
@@ -78,6 +105,11 @@ const useSocketListeners = (boardId) => {
         socket.on('cardUpdated', cardUpdatedListener);
         socket.on('cardMoved', cardMovedListener);
 
+        socket.on('listCreated', listCreatedListener);
+        socket.on('listDeleted', listDeletedListener);
+        socket.on('listUpdated', listUpdatedListener);
+        socket.on('listMoved', listMovedListener);
+
         // Cleanup on unmount or board change
         return () => {
             cleanup(boardId);  // Leave board room and remove listeners
@@ -85,8 +117,15 @@ const useSocketListeners = (boardId) => {
             socket.off('cardDeleted', cardDeletedListener);
             socket.off('cardUpdated', cardUpdatedListener);
             socket.off('cardMoved', cardMovedListener);
+            socket.off('listCreated', listCreatedListener);
+            socket.off('listDeleted', listDeletedListener);
+            socket.off('listUpdated', listUpdatedListener);
+            socket.off('listMoved', listMovedListener);
         };
-    }, [boardId, cardCreatedListener, cardDeletedListener, cardUpdatedListener, cardMovedListener]);
+    }, [boardId, cardCreatedListener,
+        cardDeletedListener, cardUpdatedListener,
+        cardMovedListener, listCreatedListener,
+        listDeletedListener]);
 
 };
 
@@ -100,5 +139,15 @@ const getCardPosMap = (srcListCards, destListCards) => {
 
     return positionMap;
 };
+
+const getListsPosMap = (lists) => {
+    const positionMap = {};
+
+    lists.forEach(list => {
+        positionMap[list._id] = list.position;
+    });
+
+    return positionMap;
+}
 
 export default useSocketListeners;

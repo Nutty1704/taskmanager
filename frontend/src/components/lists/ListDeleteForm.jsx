@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getConfirmationSchema } from '@/src/lib/form-validators'
 import FormSubmit from '../form/form-submit'
-import useListStore from '@/src/stores/useListStore'
 import useListAPI from '@/src/hooks/api/useListAPI'
 
 
@@ -27,8 +26,6 @@ const ListDeleteForm = ({
         }
     });
 
-    const { removeList } = useListStore();
-
     const onDelete = async (data) => {
         try {
             const { success } = await deleteList(boardId, id);
@@ -38,7 +35,7 @@ const ListDeleteForm = ({
                 return;
             }
 
-            removeList(id);
+            // Local removal handled by socket listener
             toast.success(`List "${title}" deleted`);
 
             if (props.onSuccess) {
