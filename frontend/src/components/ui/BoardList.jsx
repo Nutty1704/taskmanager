@@ -2,7 +2,6 @@ import { User2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import useBoardStore from '@/src/stores/useBoardStore';
 import BoardListSkeleton from '../skeletons/BoardListSkeleton';
-import useAuthStore from '@/src/stores/useAuthStore';
 import BoardListGrid from '../boards/BoardListGrid';
 import useUserStore from '@/src/stores/useUserStore';
 import StarredBoards from '../boards/StarredBoards';
@@ -13,12 +12,11 @@ import { useAuth } from '@clerk/clerk-react';
 
 const BoardList = () => {
   const { boards, setBoards } = useBoardStore();
-  const { token } = useAuthStore();
   const [loading, setLoading] = useState(true);
   const { starredBoards, setStarredBoards } = useUserStore();
   const [recentBoards, setRecentBoards] = useState([]);
 
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn, orgId } = useAuth();
   const { getBoards } = useBoardAPI();
   const { getStarredBoards, getRecentBoards } = useUserAPI();
 
@@ -33,7 +31,7 @@ const BoardList = () => {
     };
 
     fetchBoards();
-  }, [token, isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, orgId]);
 
   useEffect(() => {
     const fetchStarredBoards = async () => {
@@ -56,7 +54,7 @@ const BoardList = () => {
     });
   }, [starredBoards]);
 
-  if (loading) return <BoardListSkeleton />;
+  if (loading || !isLoaded || !isSignedIn) return <BoardListSkeleton />;
 
   return (
     <div className='space-y-4'>
