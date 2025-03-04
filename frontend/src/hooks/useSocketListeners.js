@@ -2,10 +2,13 @@ import { useEffect, useCallback } from "react";
 import useCardStore from "../stores/useCardStore";
 import useListStore from "../stores/useListStore";
 import socket, { joinBoard, cleanup } from "../lib/socket";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCardModal } from "./useCardModal";
 
 const useSocketListeners = (boardId) => {
+    const queryClient = useQueryClient();
     const { pushCard, removeCard, updateCard } = useCardStore();
-    const { lists, setLists } = useListStore();
+    const { setLists } = useListStore();
 
     const cardCreatedListener = useCallback(({ card, listId }) => {
         pushCard(card, listId);
@@ -13,36 +16,55 @@ const useSocketListeners = (boardId) => {
 
     const cardDeletedListener = useCallback(({ cardId, listId }) => {
         removeCard(cardId, listId);
+
+        const { isOpen, id, onClose } = useCardModal.getState();
+
+        if (isOpen && id === cardId) {
+            onClose();
+        };
     }, [removeCard]);
 
     const cardUpdatedListener = useCallback(({ cardId, listId, updatedFields }) => {
         updateCard(cardId, listId, updatedFields);
-    }, [updateCard]);
+        queryClient.setQueryData(['card', listId, cardId], (oldData) => {
+            if (!oldData || !oldData.card) return oldData;
+            return {
+                ...oldData,
+                card: {
+                    ...oldData.card,
+                    ...updatedFields
+                }
+            }
+        });
+    }, [queryClient, updateCard]);
 
+    // TODO: Fix card duplication on the dragging user's end.
     const cardMovedListener = useCallback(({ moveCardId, srcList, destList }) => {
+        const lists = useListStore.getState().lists;
         const srcListLocal = lists.find(list => list._id === srcList._id);
         const destListLocal = destList ? lists.find(list => list._id === destList._id) : null;
-
-        if (!srcListLocal) return;  // Prevent errors if lists are not yet populated
-
         const movedCard = srcListLocal.cards.find(card => card._id === moveCardId);
+        const positionMap = getCardPosMap(srcList.cards, destList?.cards || []);
+
         if (!movedCard) return;
 
-        const positionMap = getCardPosMap(srcList, destList || []);
+        const { isOpen, id, onOpen } = useCardModal.getState();
 
         if (!destListLocal) {
             srcListLocal.cards.forEach(card => card.position = positionMap[card._id]);
+            srcListLocal.cards.sort((a, b) => a.position - b.position);
         } else {
             srcListLocal.cards = srcListLocal.cards.filter(card => card._id !== moveCardId);
             destListLocal.cards.push(movedCard);
             destListLocal.cards.forEach(card => card.position = positionMap[card._id]);
+            destListLocal.cards.sort((a, b) => a.position - b.position);
+
+            if (isOpen && id === moveCardId) onOpen(movedCard._id, destList._id);
         }
 
-        srcListLocal.cards.sort((a, b) => a.position - b.position);
-        if (destListLocal) destListLocal.cards.sort((a, b) => a.position - b.position);
-
         setLists([...lists]);
-    }, [lists, setLists]);
+    }, [setLists]);
+    
 
     useEffect(() => {
         if (!boardId) return;
@@ -69,10 +91,10 @@ const useSocketListeners = (boardId) => {
 };
 
 // Helper function to generate a card position map
-const getCardPosMap = (srcList, destList) => {
+const getCardPosMap = (srcListCards, destListCards) => {
     const positionMap = {};
 
-    [...srcList.cards, ...destList.cards].forEach(card => {
+    [...srcListCards, ...destListCards].forEach(card => {
         positionMap[card._id] = card.position;
     });
 

@@ -44,7 +44,7 @@ const Members = ({ data }) => {
     return (
         <div className='grid grid-cols-4 gap-2'>
             {/* map over members */}
-            {members.map((member) => (
+            {members?.map((member) => (
                 <ToolTip text={member.firstName + " " + member.lastName} key={member.id}>
                     <img
                         src={member.imageUrl}
@@ -55,7 +55,7 @@ const Members = ({ data }) => {
 
             {isAdmin && (
                 <MembersPopover
-                    defaultActiveMembers={members.map((member) => member.id)} // TODO: refactor according to API response
+                    defaultActiveMembers={members?.map((member) => member.id)} // TODO: refactor according to API response
                     onSave={onUpdate}
                 >
                     <Button variant='transparent' size='sm' className='w-2 rounded-md'>

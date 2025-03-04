@@ -20,7 +20,7 @@ const CardModal = () => {
   const { fetchCard, fetchCardAuditLog } = useCardAPI();
   const { getChecklists } = useChecklistAPI();
   const { data: card, isLoading } = useQuery({
-    queryKey: ['card', boardId, listId, id], // Unique key for caching
+    queryKey: ['card', listId, id], // Unique key for caching
     queryFn: () => fetchCard(boardId, listId, id),
     enabled: isOpen && !!id && !!listId,
     select: (data) => (data.success ? data.card : {}),
