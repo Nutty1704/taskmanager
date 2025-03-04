@@ -48,7 +48,6 @@ const ActivityList = () => {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    console.log("Fetching next page...");
                     fetchNextPage();
                 }
             },

@@ -21,8 +21,6 @@ export const getAuditLogs = async (req, res, next) => {
 
         const nextPage = skip + limit < totalLogs ? page + 1 : null;
 
-        console.log({ page, limit, skip, totalLogs, nextPage, logs: logs.length });
-
         res.status(200).json({
             success: true,
             data: logs,
