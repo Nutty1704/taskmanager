@@ -11,30 +11,24 @@ export const initializeSocket = (server) => {
     });
 
     io.on('connection', (socket) => {
-        console.log(`User connected: ${socket.id}`);
 
         socket.on('joinBoard', (boardId) => {
             socket.join(boardId);
-            console.log(`User ${socket.id} joined board ${boardId}`);
         });
 
         socket.on('leaveBoard', (boardId) => {
             socket.leave(boardId);
-            console.log(`User ${socket.id} left board ${boardId}`);
         });
 
         socket.on('joinOrg', (orgId) => {
             socket.join(orgId);
-            console.log(`User ${socket.id} joined org ${orgId}`);
         });
 
         socket.on('leaveOrg', (orgId) => {
             socket.leave(orgId);
-            console.log(`User ${socket.id} left org ${orgId}`);
         });
 
         socket.on('disconnect', () => {
-            console.log(`User disconnected: ${socket.id}`);
         });
     });
 };
