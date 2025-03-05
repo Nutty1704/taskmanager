@@ -18,6 +18,7 @@ import { Toaster } from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react';
 import BoardLayout from './layouts/BoardLayout'
 import BoardPage from './pages/BoardPage'
+import NotFoundPage from './pages/404'
 
 const App = () => {
   const { userId, orgId } = useAuth();
@@ -107,6 +108,12 @@ const App = () => {
               <BoardPage />
             </BoardLayout>
           </ProtectedRoute>
+        } />
+
+        <Route path='*' element={
+          <NotLoggedInLayout>
+            <NotFoundPage />
+          </NotLoggedInLayout>
         } />
         
       </Routes>
