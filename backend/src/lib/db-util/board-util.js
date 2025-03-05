@@ -13,7 +13,9 @@ export const verifyOrgForBoard = async (orgId, boardId) => {
         }
         return true;
     } catch (error) {
-        console.log("Error in verifyOrgForBoard", error);
+        if (!error.isCustom) {
+            console.log("Error in verifyOrgForBoard", error);
+        }
         throw error;
     }
 }
@@ -35,7 +37,9 @@ export const createDefaultLabels = async (boardId) => {
 
         return labels;
     } catch (error) {
-        console.log("Error in createDefaultLabels", error);
+        if (!error.isCustom) {
+            console.log("Error in createDefaultLabels", error);
+        }
         throw error;
     }
 }

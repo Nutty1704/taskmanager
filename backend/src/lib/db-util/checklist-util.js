@@ -21,7 +21,9 @@ export const safeGetChecklist = async (checklistId, cardId) => {
 
         return checklist;
     } catch (error) {
-        console.error("Error in safeGetChecklist", error);
+        if (!error.isCustom) {
+            console.error("Error in safeGetChecklist", error);
+        }
         throw error;
     }
 }

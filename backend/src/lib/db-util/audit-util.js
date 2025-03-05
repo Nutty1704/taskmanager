@@ -24,7 +24,9 @@ export const attachUserToLogs = async (logs) => {
         });
 
     } catch (error) {
-        console.log("Error in attachUserToLogs", error);
+        if (!error.isCustom) {
+            console.log("Error in attachUserToLogs", error);
+        }
         throw error;
     }
 }
@@ -69,7 +71,9 @@ export const createAuditLog = async (entityType, action, entityId, entityTitle, 
         await auditLog.save();
 
     } catch (error) {
-        console.log("Error in createAuditLog", error);
+        if (!error.isCustom) {
+            console.log("Error in createAuditLog", error);
+        }
         throw error;
     }
 }

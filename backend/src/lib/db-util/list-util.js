@@ -36,7 +36,9 @@ export const getHighestOrderList = async (boardId) => {
 
         return board.length ? board[0].position : 0;
     } catch (error) {
-        console.log("Error in getHighestOrderList", error)
+        if (!error.isCustom) {
+            console.log("Error in getHighestOrderList", error)
+        }
         return 0;
     }
 }

@@ -22,7 +22,7 @@ export const assignUser = async (userId, orgId, card) => {
             { _id: card._id, assignedTo: { $exists: false } }, // If it doesn’t exist
             { $set: { assignedTo: [] } } // Initialize as an empty array
         );
-        
+
         await Card.updateOne(
             { _id: card._id },
             { $addToSet: { assignedTo: userId } } // Now safely add the user
@@ -71,7 +71,9 @@ export const getCardLabels = async (boardId, cardId) => {
         const labels = await Label.find({ boardId, cardId });
         return labels;
     } catch (error) {
-        console.log("Error in getCardLabels", error);
+        if (!error.isCustom) {
+            console.log("Error in getCardLabels", error);
+        }
         throw error;
     }
 }
@@ -90,7 +92,9 @@ export const getHighestOrderCard = async (listId) => {
 
         return list.length ? list[0].position : 0;
     } catch (error) {
-        console.log("Error in getHighestOrderCard", error);
+        if (!error.isCustom) {
+            console.log("Error in getHighestOrderCard", error);
+        }
         throw error;
     }
 }
@@ -107,7 +111,9 @@ export const safeGetCard = async (cardId, listId, boardId, orgId) => {
 
         return card;
     } catch (error) {
-        console.error("Error in safeGetCard", error);
+        if (!error.isCustom) {
+            console.error("Error in safeGetCard", error);
+        }
         throw error;
     }
 }
@@ -151,7 +157,9 @@ export const verifyCardPermission = async (orgId, boardId, listId) => {
 
         return true;
     } catch (error) {
-        console.log("Error in verifyCardPermission", error);
+        if (!error.isCustom) {
+            console.log("Error in verifyCardPermission", error);
+        }
         throw error;
     }
 }
