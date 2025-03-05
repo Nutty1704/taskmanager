@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Check, Loader2 } from 'lucide-react';
-import { defaultImages } from '@/src/config/images';
 import FormErrors from './form-errors';
 import useUnsplashAPI from '@/src/hooks/api/useUnsplashAPI';
 
@@ -20,8 +19,7 @@ const FormPicker = ({
         const fetchImages = async () => {
             try {
                 setIsLoading(true);
-                // const fetchedImages = await getRandomImages();
-                const fetchedImages = defaultImages;
+                const fetchedImages = await getRandomImages();
                 if (!fetchedImages) {
                     throw new Error('Error fetching images');
                 }
