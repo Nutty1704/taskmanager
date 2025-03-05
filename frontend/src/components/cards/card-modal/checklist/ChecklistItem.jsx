@@ -6,22 +6,26 @@ import { Trash2 } from 'lucide-react';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 
-const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete }) => {
+const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete, listId, boardId }) => {
   const [isChecked, setIsChecked] = useState(item.isCompleted);
   const queryClient = useQueryClient();
   const { removeItem, updateItem } = useChecklistAPI();
+
+  React.useEffect(() => {
+    setIsChecked(item.isCompleted);
+  }, [item]);
 
   const onCheckedChange = async (checked) => {
     setIsChecked(checked);
     
     try {
-      const { success } = await updateItem(cardId, checklistId, item._id, item.text, checked);
+      const { success } = await updateItem(boardId, listId, cardId, checklistId, item._id, item.text, checked);
 
       if (success) {
         if (checked) onComplete();
         else onIncomplete();
 
-        queryClient.invalidateQueries(['card-checklists', cardId]);
+        // local update is handled by socket listener
       } else {
         setIsChecked(!checked);
       }
@@ -32,10 +36,10 @@ const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete }) 
 
   const onDelete = async () => {
     try {
-      const { success } = await removeItem(cardId, checklistId, item._id);
+      const { success } = await removeItem(boardId, listId, cardId, checklistId, item._id);
 
       if (success) {
-        queryClient.invalidateQueries(['card-checklists', cardId]);
+        // Local removal handled by socket listener
       } else {
         toast.error('Failed to delete item');
       }
@@ -50,7 +54,7 @@ const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete }) 
       <Checkbox
         className='w-4 h-4 rounded-full border-success data-[state=checked]:bg-success disabled:cursor-pointer'
         checkClass='text-background h-3 w-3'
-        defaultChecked={isChecked}
+        checked={isChecked}
         onCheckedChange={onCheckedChange}
         strokeWidth={3}
       />

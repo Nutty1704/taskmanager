@@ -2,6 +2,7 @@ import Checklist from "../models/checklist.model.js";
 import { safeGetCard } from "../lib/db-util/card-util.js";
 import { InvalidDataError, NotFoundError } from "../lib/error-util.js";
 import { safeGetChecklist } from "../lib/db-util/checklist-util.js";
+import { getIO } from "../lib/socket.js";
 
 
 export const createChecklist = async (req, res, next) => {
@@ -26,6 +27,13 @@ export const createChecklist = async (req, res, next) => {
 
         await card.save();
 
+        // Emit event
+        getIO().to(boardId).emit('checklistCreated', {
+            checklist: newChecklist,
+            cardId,
+            listId
+        });
+
         res.status(201).json({ success: true, data: newChecklist });
     } catch (error) {
         next(error);
@@ -34,7 +42,7 @@ export const createChecklist = async (req, res, next) => {
 
 export const addItem = async (req, res, next) => {
     try {
-        const { cardId, checklistId, text, isCompleted = false } = req.body;
+        const { boardId, listId, cardId, checklistId, text, isCompleted = false } = req.body;
 
         if (!cardId || !text || !checklistId) {
             throw new InvalidDataError('Card Id, Checklist Id and Text are required');
@@ -49,6 +57,13 @@ export const addItem = async (req, res, next) => {
 
         await checklist.save();
 
+        // Emit event
+        getIO().to(boardId).emit('checklistUpdated', {
+            checklist,
+            cardId,
+            listId
+        });
+
         res.status(201).json({ success: true, data: checklist });
     } catch (error) {
         next(error);
@@ -57,7 +72,9 @@ export const addItem = async (req, res, next) => {
 
 export const updateItem = async (req, res, next) => {
     try {
-        const { cardId, checklistId, itemId, text, isCompleted = false } = req.body;
+        const { boardId, listId, cardId,
+            checklistId, itemId, text,
+            isCompleted = false } = req.body;
 
         if (!cardId || !text || !checklistId || !itemId) {
             throw new InvalidDataError('Card Id, Checklist Id, Item Id and Text are required');
@@ -74,6 +91,15 @@ export const updateItem = async (req, res, next) => {
 
         await checklist.save();
 
+        console.log('checklist', checklist);
+
+        // Emit event
+        getIO().to(boardId).emit('checklistUpdated', {
+            checklist,
+            cardId,
+            listId
+        });
+
         res.status(200).json({ success: true });
     } catch (error) {
         next(error);
@@ -82,7 +108,7 @@ export const updateItem = async (req, res, next) => {
 
 export const deleteItem = async (req, res, next) => {
     try {
-        const { cardId, checklistId, itemId } = req.body;
+        const { boardId, listId, cardId, checklistId, itemId } = req.body;
 
         if (!cardId || !checklistId || !itemId) {
             throw new InvalidDataError('Card Id, Checklist Id and Item Id are required');
@@ -96,6 +122,13 @@ export const deleteItem = async (req, res, next) => {
             checklist.items = checklist.items.filter(item => item._id.toString() !== itemId);
             await checklist.save();
         }
+
+        // Emit event
+        getIO().to(boardId).emit('checklistUpdated', {
+            checklist,
+            cardId,
+            listId
+        });
 
         res.status(200).json({ success: true });
     } catch (error) {
@@ -117,6 +150,13 @@ export const removeChecklist = async (req, res, next) => {
 
         await checklist.deleteOne();
 
+        // Emit event
+        getIO().to(boardId).emit('checklistDeleted', {
+            checklistId,
+            cardId,
+            listId
+        });
+
         res.status(200).json({ success: true });
     } catch (error) {
         next(error);
@@ -137,7 +177,7 @@ export const getChecklists = async (req, res, next) => {
 
 export const updateChecklist = async (req, res, next) => {
     try {
-        const { cardId, checklistId, title } = req.body;
+        const { boardId, listId, cardId, checklistId, title } = req.body;
         
         if (!cardId || !checklistId || !title) {
             throw new InvalidDataError('Card Id, Checklist Id and Title are required');
@@ -148,6 +188,13 @@ export const updateChecklist = async (req, res, next) => {
         checklist.title = title;
 
         await checklist.save();
+
+        // Emit event
+        getIO().to(boardId).emit('checklistUpdated', {
+            checklist,
+            cardId,
+            listId
+        });
 
         res.status(200).json({ success: true });
     } catch (error) {

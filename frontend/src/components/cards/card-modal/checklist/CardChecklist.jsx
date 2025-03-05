@@ -5,7 +5,6 @@ import ChecklistItem from './ChecklistItem'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
-import { useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import ChecklistTitleForm from './ChecklistTitleForm'
 import DeleteConfirmation from '@/src/components/ui/DeleteConfirmation'
@@ -32,15 +31,14 @@ const CardChecklist = ({ checklist, ...props }) => {
   const [ progress, setProgress ] = useState(0);
 
   const { removeChecklist, updateChecklist } = useChecklistAPI();
-  const queryClient = useQueryClient();
   const { boardId } = useParams();
 
   const markCompleted = () => {
-    setCompletedCount(completedCount + 1);
+    setCompletedCount(Math.min(checklist.items.length, completedCount + 1));
   }
 
   const markIncomplete = () => {
-    setCompletedCount(completedCount - 1);
+    setCompletedCount(Math.max(0, completedCount - 1));
   }
 
   const onDelete = async (closeBtnRef) => {
@@ -48,7 +46,7 @@ const CardChecklist = ({ checklist, ...props }) => {
       const { success } = await removeChecklist(props.card._id, props.card.list_id, boardId, checklist._id);
 
       if (success) {
-        queryClient.invalidateQueries(['card-checklists', props.card?._id]);
+        // Local removal handled by socket listener
         closeBtnRef.current?.click();
       } else {
         toast.error("Failed to delete checklist", 1000);
@@ -61,9 +59,12 @@ const CardChecklist = ({ checklist, ...props }) => {
 
   const onTitleUpdate = async (title) => {
     try {
-      const { success } = await updateChecklist(props.card?._id, checklist._id, title);
+      const { success } = await updateChecklist(boardId, props.card?.list_id, props.card?._id, checklist._id, title);
 
-      if (success) queryClient.invalidateQueries(['card-checklists', props.card?._id]);
+      if (success) {
+        // Local update handled by socket listener
+        toast.success('Checklist title updated successfully', { duration: 1000 });
+      }
 
       return success;
     } catch (error) {
@@ -125,6 +126,8 @@ const CardChecklist = ({ checklist, ...props }) => {
             <ChecklistItem
               key={item._id}
               item={item}
+              listId={props.card?.list_id}
+              boardId={boardId}
               cardId={props.card?._id}
               checklistId={checklist._id}
               onComplete={markCompleted}
@@ -133,7 +136,7 @@ const CardChecklist = ({ checklist, ...props }) => {
           ))}
 
           <ItemWrapper>
-            <AddItemForm checklist={checklist} {...props} />
+            <AddItemForm checklist={checklist} {...props} boardId={boardId} />
           </ItemWrapper>
         </div>
     </div>

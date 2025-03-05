@@ -4,12 +4,11 @@ import FormSubmit from '@/src/components/form/form-submit';
 import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
 import { checklistItemSchema } from '@/src/lib/form-validators';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-const AddItemForm = ({ checklist, card }) => {
+const AddItemForm = ({ checklist, card, boardId }) => {
     const [ showForm, setShowForm ] = useState(false);
     const { addItem } = useChecklistAPI();
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
@@ -18,7 +17,6 @@ const AddItemForm = ({ checklist, card }) => {
             text: ''
         }
     });
-    const queryClient = useQueryClient();
 
     if (!showForm) {
         return (
@@ -35,10 +33,10 @@ const AddItemForm = ({ checklist, card }) => {
 
     const onSubmit = async (data) => {
         try {
-            const { success } = await addItem(card._id, checklist._id, data.text);
+            const { success } = await addItem(boardId, card.list_id,card._id, checklist._id, data.text);
 
             if (success) {
-                queryClient.invalidateQueries(['card-checklists', card._id]);
+                // Local update and modal update handled by socket listener
                 reset();
                 setShowForm(false);
             } else {

@@ -5,8 +5,8 @@ const useChecklistAPI = () => {
     const apiHandler = useApiHandler();
     const apiClient = useApiClient();
 
-    const addItem = (cardId, checklistId, text) => apiHandler(async () => {
-        const response = await apiClient.post("/api/card/checklist/add-item", { cardId, checklistId, text });
+    const addItem = (boardId, listId, cardId, checklistId, text) => apiHandler(async () => {
+        const response = await apiClient.post("/api/card/checklist/add-item", { boardId, listId, cardId, checklistId, text });
         return response.data.success ? { success: true, updatedChecklist: response.data.data } : { success: false };
     });
 
@@ -25,18 +25,18 @@ const useChecklistAPI = () => {
         return { success: response.data.success, checklists: response.data.data };
     });
 
-    const removeItem = (cardId, checklistId, itemId) => apiHandler(async () => {
-        const response = await apiClient.post("/api/card/checklist/delete-item", { cardId, checklistId, itemId });
+    const removeItem = (boardId, listId, cardId, checklistId, itemId) => apiHandler(async () => {
+        const response = await apiClient.post("/api/card/checklist/delete-item", { boardId, listId, cardId, checklistId, itemId });
         return { success: response.data.success };
     });
 
-    const updateItem = (cardId, checklistId, itemId, text, isCompleted) => apiHandler(async () => {
-        const response = await apiClient.post("/api/card/checklist/update-item", { cardId, checklistId, itemId, text, isCompleted });
+    const updateItem = (boardId, listId, cardId, checklistId, itemId, text, isCompleted) => apiHandler(async () => {
+        const response = await apiClient.post("/api/card/checklist/update-item", { boardId, listId, cardId, checklistId, itemId, text, isCompleted });
         return { success: response.data.success };
     });
 
-    const updateChecklist = (cardId, checklistId, title) => apiHandler(async () => {
-        const response = await apiClient.post("/api/card/checklist/update", { cardId, checklistId, title });
+    const updateChecklist = (boardId, listId, cardId, checklistId, title) => apiHandler(async () => {
+        const response = await apiClient.post("/api/card/checklist/update", { boardId, cardId, listId, checklistId, title });
         return { success: response.data.success };
     });
 

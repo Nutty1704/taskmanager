@@ -3,9 +3,7 @@ import FormInput from '@/src/components/form/form-input';
 import FormSubmit from '@/src/components/form/form-submit';
 import useChecklistAPI from '@/src/hooks/api/useChecklistAPI';
 import { checklistSchema } from '@/src/lib/form-validators';
-import useCardStore from '@/src/stores/useCardStore';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form';
@@ -24,18 +22,14 @@ const CardChecklistPopover = ({ children, card }) => {
     });
 
     const closeRef = useRef(null);
-    const queryClient = useQueryClient();
-
-    const { updateCard: updateCardLocal } = useCardStore();
 
     const onSubmit = async (data) => {
         try {
             const { success, newChecklist } = await createChecklist(card._id, card.list_id, boardId, data.title);
 
             if (success) {
-                queryClient.invalidateQueries(['card-checklists', card._id]);
                 card.checklists.push(newChecklist);
-                updateCardLocal(card._id, card.list_id, card);
+                // Local update and modal update handled by socket listener
                 toast.success('Checklist created successfully', { duration: 1000 });
                 closeRef.current.click();
             }
