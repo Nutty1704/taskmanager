@@ -16,13 +16,11 @@ const BoardList = () => {
   const { starredBoards, setStarredBoards } = useUserStore();
   const [recentBoards, setRecentBoards] = useState([]);
 
-  const { isLoaded, isSignedIn, orgId } = useAuth();
+  const { orgId } = useAuth();
   const { getBoards } = useBoardAPI();
   const { getStarredBoards, getRecentBoards } = useUserAPI();
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
-
     const fetchBoards = async () => {
       setLoading(true);
       const { success, boards } = await getBoards();
@@ -31,7 +29,7 @@ const BoardList = () => {
     };
 
     fetchBoards();
-  }, [isLoaded, isSignedIn, orgId]);
+  }, [orgId]);
 
   useEffect(() => {
     const fetchStarredBoards = async () => {
@@ -54,7 +52,7 @@ const BoardList = () => {
     });
   }, [starredBoards]);
 
-  if (loading || !isLoaded || !isSignedIn) return <BoardListSkeleton />;
+  if (loading) return <BoardListSkeleton />;
 
   return (
     <div className='space-y-4'>

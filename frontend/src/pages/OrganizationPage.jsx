@@ -12,14 +12,12 @@ const OrganizationPage = () => {
 
   const getPage = () => {
     switch (page) {
-      case undefined:
-        return <BoardsPage />
       case 'settings':
         return <SettingsPage />
       case 'activity':
         return <ActivityPage />
       default:
-        return 'Not Found'
+        return <BoardsPage />
     }
   }
 
