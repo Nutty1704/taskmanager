@@ -8,6 +8,8 @@ import { createAuditLog } from '../lib/db-util/audit-util.js';
 import { addToHistory } from '../lib/db-util/user-util.js';
 import { NotFoundError } from '../lib/error-util.js';
 
+import { getIO } from "../lib/socket.js";
+
 export const createBoard = async (req, res, next) => {
     try {
         const {
@@ -190,6 +192,9 @@ export const updateBoardLabel = async (req, res, next) => {
                 boardId
             });
 
+            // Emit event
+            getIO().to(boardId).emit('labelCreated', { label: newLabel });
+
             return res.status(201).json({ success: true, data: newLabel });
         }
 
@@ -199,6 +204,8 @@ export const updateBoardLabel = async (req, res, next) => {
         label.color = color;
 
         await label.save();
+
+        getIO().to(boardId).emit('labelUpdated', { label });
 
         return res.status(200).json({ success: true, data: label });
 
@@ -218,6 +225,9 @@ export const deleteBoardLabel = async (req, res, next) => {
         const label = await Label.findOneAndDelete({ _id: labelId, boardId });
 
         if (!label) throw new NotFoundError("Label not found");
+
+        // Emit event
+        getIO().to(boardId).emit('labelDeleted', { labelId: label._id });
 
         res.status(200).json({ success: true });
     } catch (error) {

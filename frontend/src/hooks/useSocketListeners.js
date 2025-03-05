@@ -4,11 +4,13 @@ import useListStore from "../stores/useListStore";
 import socket, { joinBoard, cleanup } from "../lib/socket";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCardModal } from "./useCardModal";
+import useLabelStore from "../stores/useLabelStore";
 
 const useSocketListeners = (boardId) => {
     const queryClient = useQueryClient();
-    const { pushCard, removeCard, updateCard } = useCardStore();
+    const { pushCard, removeCard, updateCard, removeLabelFromAllCards } = useCardStore();
     const { addList, removeList, setLists } = useListStore();
+    const { addLabel, updateLabel, deleteLabel } = useLabelStore();
 
     const cardCreatedListener = useCallback(({ card, listId }) => {
         pushCard(card, listId);
@@ -151,6 +153,48 @@ const useSocketListeners = (boardId) => {
             });
         }
     }, [updateCard, queryClient]);
+
+    const labelCreatedListener = useCallback(({ label }) => {
+        addLabel(label);
+    }, [addLabel]);
+
+    const labelUpdatedListener = useCallback(({ label }) => {
+        updateLabel(label);
+
+        const { isOpen, id, listId } = useCardModal.getState();
+
+        if (isOpen && id) {
+            queryClient.setQueryData(['card', listId, id], (oldData) => {
+                return {
+                    ...oldData,
+                    card: {
+                        ...oldData.card,
+                        labels: oldData.card.labels.map(l => l._id === label._id ? label : l)
+                    }
+                }
+            });
+        }
+    }, [updateLabel]);
+
+    const labelDeletedListener = useCallback(({ labelId }) => {
+        deleteLabel(labelId);
+        removeLabelFromAllCards(labelId);
+
+        const { isOpen, id, listId } = useCardModal.getState();
+
+        if (isOpen && id) {
+            queryClient.setQueryData(['card', listId, id], (oldData) => {
+                console.log("Old data: ", oldData);
+                return {
+                    ...oldData,
+                    card: {
+                        ...oldData.card,
+                        labels: oldData.card.labels.filter(l => l._id !== labelId)
+                    }
+                }
+            });
+        }
+    }, [deleteLabel, removeLabelFromAllCards]);
     
 
     useEffect(() => {
@@ -174,6 +218,10 @@ const useSocketListeners = (boardId) => {
         socket.on('checklistDeleted', checklistDeletedListener);
         socket.on('checklistUpdated', checklistUpdatedListener);
 
+        socket.on('labelCreated', labelCreatedListener);
+        socket.on('labelUpdated', labelUpdatedListener);
+        socket.on('labelDeleted', labelDeletedListener);
+
         // Cleanup on unmount or board change
         return () => {
             cleanup(boardId);  // Leave board room and remove listeners
@@ -188,13 +236,18 @@ const useSocketListeners = (boardId) => {
             socket.off('checklistCreated', checklistCreatedListener);
             socket.off('checklistDeleted', checklistDeletedListener);
             socket.off('checklistUpdated', checklistUpdatedListener);
+            socket.off('labelCreated', labelCreatedListener);
+            socket.off('labelUpdated', labelUpdatedListener);
+            socket.off('labelDeleted', labelDeletedListener);
         };
     }, [boardId, cardCreatedListener,
         cardDeletedListener, cardUpdatedListener,
         cardMovedListener, listCreatedListener,
         listDeletedListener, listUpdatedListener,
         listMovedListener, checklistCreatedListener,
-        checklistDeletedListener, checklistUpdatedListener]);
+        checklistDeletedListener, checklistUpdatedListener,
+        labelCreatedListener, labelUpdatedListener,
+        labelDeletedListener]);
 
 };
 

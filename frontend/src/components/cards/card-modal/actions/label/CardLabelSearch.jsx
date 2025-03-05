@@ -2,14 +2,26 @@ import useLabelStore from '@/src/stores/useLabelStore'
 import React, { useEffect, useRef, useState } from 'react'
 import colors from '@/src/config/labelColors.json'
 
+const filterLabels = (labels, search) => {
+    return labels.filter(label => (
+        label.title.toLowerCase().startsWith(search)
+        || colors[label.color].name.startsWith(search)
+    ));
+}
+
 const CardLabelSearch = ({ setLabels }) => {
     const { labels } = useLabelStore();
     const [ searchTerm, setSearchTerm ] = useState('');
     const debounceTimer = useRef(null);
 
+    // useEffect(() => {
+    //     setLabels(labels);
+    // }, []);
+
     useEffect(() => {
-        setLabels(labels);
-    }, []);
+        setLabels(filterLabels(labels, searchTerm));
+    }, [labels]);
+
 
     const onChange = (e) => {
         const value = e.target.value.toLowerCase();
@@ -18,10 +30,7 @@ const CardLabelSearch = ({ setLabels }) => {
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         debounceTimer.current = setTimeout(() => {
-            const filteredLabels = labels.filter(label => (
-                label.title.toLowerCase().startsWith(value)
-                || colors[label.color].name.startsWith(value)
-            ));
+            const filteredLabels = filterLabels(labels, value);
 
             setLabels(filteredLabels);
 

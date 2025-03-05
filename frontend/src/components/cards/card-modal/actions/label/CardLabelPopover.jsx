@@ -6,9 +6,6 @@ import CardLabelSearch from './CardLabelSearch'
 import CardLabelForm from './form/CardLabelForm'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import useLabelStore from '@/src/stores/useLabelStore'
-import { useQueryClient } from '@tanstack/react-query'
-import useCardStore from '@/src/stores/useCardStore'
 import useBoardAPI from '@/src/hooks/api/useBoardAPI'
 
 
@@ -37,9 +34,6 @@ const CardLabelPopover = ({ children, card }) => {
   const [formInitialData, setFormInitialData] = useState({});
   
   const { boardId } = useParams();
-  const { addLabel, deleteLabel, updateLabel } = useLabelStore();
-  const { removeLabelFromAllCards: removeLabel } = useCardStore();
-  const queryClient = useQueryClient();
   const { deleteBoardLabel, updateBoardLabel } = useBoardAPI();
 
 
@@ -55,10 +49,8 @@ const CardLabelPopover = ({ children, card }) => {
       if (!success) {
         toast.error('Failed to save label');
       } else {
-        if (id) updateLabel(newLabel);
-        else addLabel(newLabel);
+        // local updates handled by socket listener
         setShowForm(false);
-        queryClient.invalidateQueries(['card', card._id]);
       }
     } catch (error) {
       console.error(error);
@@ -72,9 +64,8 @@ const CardLabelPopover = ({ children, card }) => {
       if (!success) {
         toast.error('Failed to delete label');
       } else {
-        deleteLabel(id);
+        // local deletion handled by socket listener
         setShowForm(false);
-        removeLabel(id);
       }
     } catch (error) {
       console.error(error);
