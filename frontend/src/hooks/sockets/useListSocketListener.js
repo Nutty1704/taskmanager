@@ -1,9 +1,12 @@
 import { useEffect, useCallback } from "react";
 import socket from "../../lib/socket";
 import useListStore from "../../stores/useListStore";
+import { useCardModal } from "../useCardModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 const useListSocketListeners = (boardId) => {
     const { addList, removeList, setLists } = useListStore();
+    const queryClient = useQueryClient();
 
     const listCreatedListener = useCallback(({ list }) => {
         addList(list);
@@ -11,6 +14,12 @@ const useListSocketListeners = (boardId) => {
 
     const listDeletedListener = useCallback(({ listId }) => {
         removeList(listId);
+
+        const { isOpen, listId: modalListId, onClose } = useCardModal.getState();
+
+        if (isOpen && listId === modalListId) {
+            onClose();
+        }
     }, [removeList]);
 
     const listUpdatedListener = useCallback(({ list }) => {
@@ -18,7 +27,24 @@ const useListSocketListeners = (boardId) => {
 
         const newLists = lists.map(l => l._id === list._id ? list : l);
         setLists(newLists);
-    }, [ setLists ]);
+
+        const { isOpen, id, listId } = useCardModal.getState();
+
+        if (isOpen && listId === list._id) {
+            queryClient.setQueryData(['card', listId, id], (oldData) => {
+                return {
+                    ...oldData,
+                    card: {
+                        ...oldData.card,
+                        list: {
+                            ...oldData.card.list,
+                            title: list.title
+                        }
+                    }
+                }
+            });
+        }
+    }, [ setLists, queryClient ]);
 
     const listMovedListener = useCallback(({ lists }) => {
         const stateLists = useListStore.getState().lists;
