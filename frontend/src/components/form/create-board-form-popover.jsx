@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 import FormInput from './form-input'
 import FormSubmit from './form-submit'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { boardSchema } from '@/src/lib/form-validators'
 import toast from 'react-hot-toast'
 import FormPicker from './form-picker'
-import useBoardStore from '@/src/stores/useBoardStore'
 import useBoardAPI from '@/src/hooks/api/useBoardAPI'
 
 const BoardFormPopover = ({
@@ -29,7 +28,6 @@ const BoardFormPopover = ({
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-    const { addBoard } = useBoardStore();
     const { createBoard } = useBoardAPI();
 
     const onSubmit = async (data) => {
@@ -40,7 +38,7 @@ const BoardFormPopover = ({
             return toast.error('Failed to create board', { duration: 1500 });
         }
 
-        addBoard(newBoard);
+        // Local update handled by socket listener
         setIsPopoverOpen(false);
         handlePopoverClose();
         toast.success(`Board "${title}" created successfully!`, { duration: 1500 });

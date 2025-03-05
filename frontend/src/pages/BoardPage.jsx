@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import useBoardStore from '../stores/useBoardStore';
 import useBoardAPI from '../hooks/api/useBoardAPI';
 import useListAPI from '../hooks/api/useListAPI';
-import useSocketListeners from '../hooks/useSocketListeners';
+import useBoardSocketListeners from '../hooks/sockets/useBoardSocketListener.js';
 
 const BoardPage = () => {
     const { boardId } = useParams();
@@ -20,7 +20,7 @@ const BoardPage = () => {
     const boardName = boards.find(board => board._id === boardId)?.title || 'Board';
 
     // Setup socket listeners
-    useSocketListeners(boardId);
+    useBoardSocketListeners(boardId);
 
     useEffect(() => {
         const fetchAllLists = async () => {

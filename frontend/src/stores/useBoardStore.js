@@ -2,6 +2,10 @@ import { create } from 'zustand'
 
 const useBoardStore = create((set) => ({
     boards: [],
+    activeBoard: null,
+    setActive: (board) => {
+        set({ activeBoard: board })
+    },
     setBoards: (boards) => {
         set({ boards })
     },
@@ -11,6 +15,11 @@ const useBoardStore = create((set) => ({
     updateBoard: (board) => {
         set((state) => ({
             boards: state.boards.map((b) => (b._id === board._id ? board : b))
+        }))
+    },
+    removeBoard: (boardId) => {
+        set((state) => ({
+            boards: state.boards.filter((b) => b._id !== boardId),
         }))
     }
 }));

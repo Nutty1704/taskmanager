@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom'
 import SettingsPage from './SettingsPage';
 import BoardsPage from './BoardsPage';
 import ActivityPage from './ActivityPage';
+import useOrgSocketListeners from '../hooks/sockets/useOrgSocketListeners';
 
 const OrganizationPage = () => {
   const { orgId, page } = useParams();
-
+  useOrgSocketListeners(orgId);
 
   const getPage = () => {
     switch (page) {

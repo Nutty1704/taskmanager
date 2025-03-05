@@ -42,6 +42,9 @@ export const createBoard = async (req, res, next) => {
 
         await createAuditLog("board", "create", newBoard._id, newBoard.title, orgId, userId);
 
+        // Emit event
+        getIO().to(orgId).emit('boardCreated', { board: newBoard });
+
         res.status(201).json({ success: true, data: newBoard });
 
     } catch (error) {
@@ -74,6 +77,10 @@ export const deleteBoard = async (req, res, next) => {
         await Label.deleteMany({ boardId: id });
 
         await createAuditLog("board", "delete", board._id, board.title, orgId, userId);
+
+        // Emit event
+        getIO().to(orgId).emit('boardDeleted', { boardId: board._id });
+        getIO().to(id).emit('boardDeleted');
 
         res.status(200).json({ success: true, message: "Board deleted successfully" });
 
@@ -118,15 +125,15 @@ export const getBoard = async (req, res, next) => {
 
 export const updateBoard = async (req, res, next) => {
     try {
-        const { id, title, isStarred } = req.body;
+        const { id, title } = req.body;
         const { orgId, userId } = req.auth;
 
         if (!id) {
             throw new InvalidDataError("Board id is required");
         }
 
-        if (!title && isStarred === undefined) {
-            throw new InvalidDataError("At least one field is required");
+        if (!title) {
+            throw new InvalidDataError("Title is required");
         }
 
         const board = await Board.findById(id);
@@ -140,13 +147,16 @@ export const updateBoard = async (req, res, next) => {
         }
 
         if (title) board.title = title;
-        if (isStarred !== undefined) board.isStarred = isStarred;
 
         await board.save();
 
         if (title) {
             await createAuditLog("board", "update", board._id, board.title, orgId, userId);
         }
+
+        // Emit event
+        getIO().to(orgId).emit('boardUpdated', { board });
+        getIO().to(id).emit('boardUpdated', { board });
 
         res.status(200).json({ success: true, data: board });
     } catch (error) {

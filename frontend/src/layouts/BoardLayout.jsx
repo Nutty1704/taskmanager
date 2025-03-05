@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import DashboardNavbar from '../components/ui/DashboardNavbar';
 import BoardNavbar from '../components/ui/BoardNavbar';
 import CardModalProvider from '../components/cards/card-modal/CardModalProvider';
 import { QueryProvider } from '../lib/query-provider';
 import useBoardAPI from '../hooks/api/useBoardAPI';
+import useBoardStore from '../stores/useBoardStore';
 
 const BoardLayout = ({ children }) => {
     const { boardId } = useParams();
-    const [board, setBoard] = useState(null);
+    const { activeBoard: board, setActive } = useBoardStore();
     
     const { getBoard } = useBoardAPI();
 
@@ -16,11 +17,12 @@ const BoardLayout = ({ children }) => {
         const fetchBoard = async () => {
             const { success, board } = await getBoard(boardId);
             if (success) {
-                setBoard(board);
+                setActive(board);
             }
         };
 
         fetchBoard();
+        return () => setActive(null);
     }, [boardId]);
 
     if (!board) {
@@ -31,7 +33,7 @@ const BoardLayout = ({ children }) => {
         <>
             <QueryProvider>
                 <DashboardNavbar className='' />
-                <BoardNavbar board={board} setBoard={setBoard} />
+                <BoardNavbar board={board} setBoard={setActive} />
                 <CardModalProvider />
                 <div className='absolute inset-0 bg-black/10' />
                 <div

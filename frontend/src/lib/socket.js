@@ -9,8 +9,17 @@ export const joinBoard = (boardId) => {
     socket.emit('joinBoard', boardId);
 }
 
-export const cleanup = (boardId) => {
+export const cleanupBoard = (boardId) => {
     socket.emit('leaveBoard', boardId);
+}
+
+export const joinOrg = (orgId) => {
+    if (!orgId) return;
+    socket.emit('joinOrg', orgId);
+}
+
+export const cleanupOrg = (orgId) => {
+    socket.emit('leaveOrg', orgId);
 }
 
 export default socket;

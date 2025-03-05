@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cardSchema } from '@/src/lib/form-validators';
 import toast from 'react-hot-toast';
-import { useCardModal } from '@/src/hooks/useCardModal';
 import { useEventListener } from 'usehooks-ts';
 import { useQueryClient } from '@tanstack/react-query';
 import CardComplete from './actions/complete/CardComplete';
@@ -17,9 +16,8 @@ const Header = ({ data }) => {
     const [ title, setTitle ] = useState(data.title);
     const { boardId } = useParams();
     const formRef = useRef(null);
-    const { isOpen } = useCardModal();
     const { updateCard } = useCardAPI();
-    const { register, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
+    const { register, setValue, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
       resolver: zodResolver(cardSchema.pick({ title: true })),
       defaultValues: {
         title: data.title
@@ -27,9 +25,10 @@ const Header = ({ data }) => {
     });
     const queryClient = useQueryClient();
 
+    // Update title whenever data.title changes
     useEffect(() => {
-      // if (!isOpen) reset();
-    }, [isOpen]);
+      setValue('title', data.title);
+    }, [data.title]);
 
     const onBlur = () => {
       formRef.current?.requestSubmit();
@@ -48,7 +47,7 @@ const Header = ({ data }) => {
         if (!success) {
           toast.error('Failed to update card');
         } else {
-          data.title = formData.title;
+          // No need to manually update data.title here
           toast.success('Card renamed');
           queryClient.invalidateQueries(['card-logs', data._id]);
         }
@@ -70,7 +69,6 @@ const Header = ({ data }) => {
 
   return (
     <div className='flex items-start gap-x-3 w-full'>
-      {/* <LayoutIcon size={17} className='mt-1 text-foreground' /> */}
       <div className='mt-1.5'>
         <CardComplete data={data} boardId={boardId} />
       </div>
@@ -80,7 +78,6 @@ const Header = ({ data }) => {
                   {...register('title')}
                   id='title'
                   name='title'
-                  defaultValue={title}
                   placeholder='Enter card title...'
                   onBlur={onBlur}
                   errors={errors.title}
@@ -95,12 +92,10 @@ const Header = ({ data }) => {
         </p>
       </div>
 
-      {/* Hidden input to avoid focusing on the form */}
       <input hidden type='text' autoFocus />
     </div>
   )
 }
-
 
 Header.Skeleton = () => (
   <div className="flex items-start gap-x-3 mb-6">
