@@ -80,7 +80,7 @@ export const deleteBoard = async (req, res, next) => {
 
         // Emit event
         getIO().to(orgId).emit('boardDeleted', { boardId: board._id });
-        getIO().to(id).emit('boardDeleted');
+        getIO().to(id).emit('boardDeleted', { orgId });
 
         res.status(200).json({ success: true, message: "Board deleted successfully" });
 

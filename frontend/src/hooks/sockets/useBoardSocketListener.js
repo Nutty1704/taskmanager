@@ -12,9 +12,9 @@ const useBoardSocketListeners = (boardId) => {
     const { removeBoard, setActive } = useBoardStore();
 
     // Handles when a board is deleted
-    const boardDeletedListener = useCallback(() => {
+    const boardDeletedListener = useCallback(({ orgId }) => {
         removeBoard(boardId);
-        navigate("/");
+        navigate("/organization/" + orgId);
     }, [navigate, removeBoard, boardId]);
 
     const boardUpdatedListener = useCallback(({ board }) => {
