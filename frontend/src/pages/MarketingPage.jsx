@@ -17,7 +17,7 @@ const MarketingPage = () => {
 
             <h1 className='poppins-semibold text-center font-heading text-4xl sm:text-5xl lg:text-6xl text-balance font-bold max-w-screen-2xl'>The ultimate platform to help achieve <span className=' bg-clip-text text-transparent bg-logo-gradient brightness-95'>Your Team's Goals</span></h1>
 
-            <p className='poppins-regular max-w-3xl text-center text-lg text-muted-foreground sm:text-xl'>Unleash the potential of streamlined workflows and intelligent task recommendations for effortless project management.</p>
+            <p className='poppins-regular max-w-3xl text-center text-lg text-muted-foreground sm:text-xl'>Keep your projects on track with a minimal, clutter-free design that streamlines workflows and simplifies task management.</p>
 
             <CtaButton text="Get Started" link="/signup" />
           </div>
