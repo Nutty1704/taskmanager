@@ -1,3 +1,4 @@
+
 # 🚀Donezo
 
 A **free and simple** task management tool designed for small teams. Organize tasks with boards, lists, and cards, collaborate efficiently, and stay productive.
@@ -15,18 +16,32 @@ A **free and simple** task management tool designed for small teams. Organize ta
 
 ## 🖥️ Live Demo
 
-🚀 **[Try it here]()**
+🚀 **[Try it here](https://donezo.me)**
 
 ## 🏗️ Tech Stack
 
 -   **Frontend**: React, Clerk (Authentication), TailwindCSS, Shadcn UI
 -   **Backend**: Node.js, Express, MongoDB, Sockets
 -   **Authentication**: Clerk (Google & Email/Password Login)
--   **Hosting**: Vercel (Frontend), Vercel (Backend)
+-   **Hosting**: Vercel (Frontend), Digital Ocean (Backend)
 
 ## 📸 Screenshots
 
-(Include relevant UI screenshots)
+### Home Page
+
+![Home Page](https://imgur.com/g5ODKek.png)
+
+### Dashboard
+![Dashboard](https://imgur.com/oV1HG4Q.png)
+
+### Board Page
+![Board Page](https://imgur.com/a8Yywas.png)
+
+### Drag and Drop
+![Drag and Drop](https://imgur.com/fU8gdSA.png)
+
+### Card Preview
+![Card Modal](https://imgur.com/EAnZRjH.png)
 
 ## 🛠️ Setup & Installation
 
@@ -44,7 +59,7 @@ A **free and simple** task management tool designed for small teams. Organize ta
     cd backend && npm install  # For backend
     ```
     
-3.  **Set up environment variables** (Create a `.env` file in both frontend and backend directories)
+3.  **Set up environment variables** (Create a `.env` file in both frontend and backend directories—refer to `.env.sample` for guidance)
 4.  **Run locally**
     
     ```sh
@@ -56,7 +71,7 @@ A **free and simple** task management tool designed for small teams. Organize ta
 ## 🚀 Deployment
 
 -   **Frontend:** Hosted on Vercel.
--   **Backend:** Hosted on Vercel (May switch to Railway/AWS for better performance when needed).
+-   **Backend:** Hosted on Digital Ocean.
 -   **Environment variables:** Configure in respective hosting platforms.
 
 ## 🎯 Future Enhancements
