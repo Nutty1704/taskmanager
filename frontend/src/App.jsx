@@ -1,6 +1,6 @@
 import './App.css'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import MarketingPage from './pages/MarketingPage'
 import LoginPage from './pages/LoginPage'
@@ -19,9 +19,15 @@ import { useAuth } from '@clerk/clerk-react';
 import BoardLayout from './layouts/BoardLayout'
 import BoardPage from './pages/BoardPage'
 import NotFoundPage from './pages/404'
+import { ping } from './lib/socket'
 
 const App = () => {
   const { userId, orgId } = useAuth();
+
+  useEffect(() => {
+    const interval = setInterval(ping, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>

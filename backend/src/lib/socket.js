@@ -12,6 +12,10 @@ export const initializeSocket = (server) => {
 
     io.on('connection', (socket) => {
 
+        socket.on('ping', () => {
+            socket.emit('pong')
+        });
+
         socket.on('joinBoard', (boardId) => {
             socket.join(boardId);
         });

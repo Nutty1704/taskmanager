@@ -4,6 +4,10 @@ const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 const socket = io(backendURL);
 
+socket.on('pong', () => {});
+
+export const ping = () => socket.emit('ping')
+
 export const joinBoard = (boardId) => {
     if (!boardId) return;
     socket.emit('joinBoard', boardId);
