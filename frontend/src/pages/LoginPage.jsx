@@ -20,6 +20,11 @@ const LoginPage = () => {
           layout: {
             socialButtonsPlacement: 'bottom',
           },
+          elements: {
+            providerIcon__github: theme === 'dark' && 'invert-svg',
+            headerTitle: 'text-foreground',
+            formFieldLabel: 'text-foreground',
+          },
           variables: variables,
         }}
       />

@@ -11,6 +11,7 @@
   --popover: 45 0% 95%;
   --popover-foreground: 45 95% 10%;
   --primary: 45 100% 50%;
+  --primary-darker: 45 100% 48%;
   --primary-foreground: 0 0% 100%;
   --secondary: 45 10% 87%;
   --secondary-foreground: 0 0% 0%;
@@ -130,7 +131,7 @@
 }
 
 .cl-formButtonPrimary {
-  @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3  font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primaryDarker px-3  font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
 }
 
 .cl-card,

@@ -39,5 +39,8 @@
     animation: from-right 0.3s ease-out forwards;
 }
 
+.invert-svg {
+  filter: invert(1);
+}
   
   
