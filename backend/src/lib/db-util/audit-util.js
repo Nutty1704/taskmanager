@@ -1,4 +1,4 @@
-import { fetchUsersFromClerk } from "../clerk-util.js";
+import { fetchUsersFromClerk, getName } from "../clerk-util.js";
 
 import AuditLog, { auditLogActions, auditLogEntityTypes } from "../../models/audit-log.model.js";
 
@@ -18,9 +18,8 @@ export const attachUserToLogs = async (logs) => {
 
         logs.forEach(log => {
             const user = userMap.get(log.userId) || null;
-            log.userName = user.firstName + " " + user.lastName;
+            log.userName = getName(user);
             log.userImage = user.imageUrl;
-
         });
 
     } catch (error) {

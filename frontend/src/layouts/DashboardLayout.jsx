@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import DashboardNavbar from '../components/ui/DashboardNavbar';
 import { OrgControl } from '../components/security/OrgControl';
 import { startCase } from 'lodash';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 import { Helmet } from 'react-helmet';
+import SetName from '../components/security/SetName';
 
 const DashboardLayout = ({ children }) => {
-  const { orgSlug } = useAuth();
+  const { orgSlug, isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
+  const [ showModal, setShowModal ] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && !user?.fullName) {
+      setShowModal(true);
+    }
+  }, [user, isLoaded, isSignedIn]);
 
   return (
     <>
@@ -23,6 +32,8 @@ const DashboardLayout = ({ children }) => {
           </main>
         </div>
       </div>
+      
+      <SetName onClose={() => setShowModal(false)} open={showModal} />
     </>
   )
 }

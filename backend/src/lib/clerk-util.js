@@ -1,5 +1,13 @@
 import { clerkClient } from "@clerk/express"
 
+
+export const getName = (user) => {
+    if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`
+    if (user.firstName) return user.firstName
+    if (user.lastName) return user.lastName
+    return user.id
+}
+
 /**
  * Fetches the given list of users from Clerk.
  * @param {string[]} userIds - The IDs of the users to fetch

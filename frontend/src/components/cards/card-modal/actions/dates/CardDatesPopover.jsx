@@ -1,10 +1,12 @@
 import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from '@/components/ui/popover-dialog'
+import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog'
 import CalendarForm from '@/src/components/form/calendar-form'
 import useCardAPI from '@/src/hooks/api/useCardAPI'
+import useIsMobileView from '@/src/hooks/useIsMobileView'
 import useCardStore from '@/src/stores/useCardStore'
 import { useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 
 const CardDatesPopover = ({ children, card, boardId, ...props }) => {
@@ -13,6 +15,9 @@ const CardDatesPopover = ({ children, card, boardId, ...props }) => {
     const { updateCard } = useCardAPI();
     const queryClient = useQueryClient();
     const { updateCard: updateCardLocal } = useCardStore();
+
+    const isMobileView = useIsMobileView();
+    const [isOpen, setIsOpen] = useState(false);
 
     const onSubmit = async (startDate, dueDate) => {
         try {
@@ -42,6 +47,25 @@ const CardDatesPopover = ({ children, card, boardId, ...props }) => {
         }
     }
 
+    const formContent = (
+        <CalendarForm initialStartDate={card.startDate} initialDueDate={card.dueDate} onSubmit={onSubmit} />
+    );
+
+    if (isMobileView) {
+        return (
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogContent className='p-4 sm:max-w-[57vw] w-[85vw]'>
+                    <DialogTitle className='text-center text-sm font-semibold text-muted-foreground'>Dates</DialogTitle>
+                    <DialogClose className='absolute right-2 top-2 p-2'>
+                        <X className='h-4 w-4' />
+                    </DialogClose>
+                    {formContent}
+                </DialogContent>
+                <div onClick={() => setIsOpen(true)}>{children}</div>
+            </Dialog>
+        );
+    }
+
     return (
         <Popover>
             <PopoverTrigger className='w-full'>
@@ -56,18 +80,13 @@ const CardDatesPopover = ({ children, card, boardId, ...props }) => {
             >
                 <div className='w-full p-1 flex items-center mb-3 relative'>
                     <span className='w-full text-sm text-center font-semibold text-foreground'>Dates</span>
-
-                    <PopoverClose className='absolute top-1 right-1' ref={closeButton}>
-                        <X className='w-4 h-4' />
+                    <PopoverClose asChild>
+                        <button ref={closeButton} className='absolute top-1 right-1 p-1'>
+                            <X className='w-4 h-4' />
+                        </button>
                     </PopoverClose>
                 </div>
-
-                <CalendarForm
-                    initialStartDate={card.startDate}
-                    initialDueDate={card.dueDate}
-                    onSubmit={onSubmit}
-                />
-
+                {formContent}
             </PopoverContent>
         </Popover>
     )

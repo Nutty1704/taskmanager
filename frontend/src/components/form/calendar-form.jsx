@@ -108,6 +108,9 @@ const CalendarForm = ({ initialStartDate, initialDueDate, onSubmit = async (star
     };
 
     const onSelect = (value) => {
+        if (!value) return;
+        if (hasStartDate && hasDueDate && (!value.from || !value.to)) return;
+
         if (hasStartDate && hasDueDate) {
             setSelected(value);
             return;

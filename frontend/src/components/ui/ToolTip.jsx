@@ -1,7 +1,13 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import React from 'react'
 
-const ToolTip = ({ children, text, className, ...props }) => {
+const ToolTip = ({
+  children,
+  text, className,
+  side = 'bottom',
+  align = 'center',
+  textClassName, ...props
+}) => {
   return (
     <TooltipProvider>
         <Tooltip>
@@ -9,8 +15,8 @@ const ToolTip = ({ children, text, className, ...props }) => {
                 {children}
             </TooltipTrigger>
             
-            <TooltipContent side='bottom' className='poppins-regular' {...props}>
-                <p>{text}</p>
+            <TooltipContent side={side} align={align} className='poppins-regular' {...props}>
+                <p className={textClassName}>{text}</p>
             </TooltipContent>
         </Tooltip>
     </TooltipProvider>
