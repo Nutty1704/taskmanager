@@ -26,6 +26,11 @@ export default function CreateOrganizationPage() {
                             elements: {
                                 button: 'text-muted-foreground hover:text-foreground',
                                 userPreviewMainIdentifier: 'text-muted-foreground hover:text-foreground',
+                                headerTitle: 'text-foreground',
+                                organizationPreviewMainIdentifier: 'text-muted-foreground hover:text-foreground',
+                                selectButton__role: 'data-[color=primary]:border data-[color=primary]:border-muted-foreground/[0.3]',
+                                tagInputContainer: 'bg-secondary',
+                                input: 'text-foreground placeholder:text-muted-foreground',
                             }
                         }}
                     />

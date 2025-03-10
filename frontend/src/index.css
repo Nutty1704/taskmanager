@@ -131,7 +131,7 @@
 }
 
 .cl-formButtonPrimary {
-  @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primaryDarker px-3  font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primaryDarker px-3 font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
 }
 
 .cl-navbar h1 {
@@ -177,6 +177,56 @@ svg.cl-organizationSwitcherPopoverActionButtonIcon {
 
 .cl-profileSectionPrimaryButton[data-localization-key='userProfile.start.dangerSection.deleteAccountButton'] {
   @apply !text-destructive-foreground hover:!text-destructive-foreground
+}
+
+.cl-organizationListPreviewButton svg {
+  @apply text-muted-foreground;
+  fill: currentColor
+}
+
+.cl-organizationAvatarUploaderContainer,
+.cl-formFieldLabel {
+  @apply text-foreground
+}
+
+.cl-internal-qo0yae {
+  @apply text-muted-foreground
+}
+
+button[aria-label='Upload organization logo'] {
+  @apply bg-secondary
+}
+
+button[aria-label='Upload organization logo'] svg {
+  @apply text-foreground
+}
+
+.cl-selectOption p {
+  @apply text-foreground
+}
+
+.cl-formButtonReset {
+  @apply hover:text-foreground
+}
+
+.cl-table {
+  @apply border border-muted-foreground/[0.05] dark:border-muted-foreground/[0.6]
+}
+
+.cl-table thead {
+  border-color: hsl(var(--muted-foreground));
+}
+
+.cl-table td p {
+  @apply text-muted-foreground
+}
+
+.cl-organizationProfileMembersSearchInput {
+  @apply bg-secondary placeholder:text-muted-foreground text-foreground
+}
+
+.cl-organizationProfileMembersSearchInputIcon {
+  @apply text-muted-foreground
 }
 
 .cl-card,
