@@ -92,7 +92,7 @@ const ListOptions = ({
                     variant='ghost'
                     onClick={onCopy}
                 >
-                    Copy List
+                    Duplicate List
                 </Button>
 
                 <Separator className='w-5/6 mx-auto' />

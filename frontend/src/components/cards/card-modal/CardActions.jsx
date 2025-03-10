@@ -96,7 +96,7 @@ const CardActions = ({ data }) => {
         onClick={onCopy}
       >
         <CopyIcon className='h-4 w-4 mr-2' />
-        Copy
+        Duplicate
       </Button>
       <DeleteConfirmation
         message="Are you sure you want to delete this card?"
