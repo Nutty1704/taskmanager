@@ -69,47 +69,46 @@ const CardActions = ({ data }) => {
     <div className='space-y-2 mt-2'>
       <p className='text-xs poppins-semibold'>Actions</p>
 
-      <CardDatesPopover card={data} boardId={boardId}>
-        <Button variant='secondary' size='inline' className='w-full justify-start'>
-          <Clock className='h-4 w-4 mr-2' />
-          Dates
-        </Button>
-      </CardDatesPopover>
-
-      <CardLabelPopover card={data}>
-        <Button variant='secondary' size='inline' className='w-full justify-start'>
-          <Tag className='h-4 w-4 mr-2' />
-          Labels
-        </Button>
-      </CardLabelPopover>
-
-      <CardChecklistPopover card={data}>
-        <Button variant='secondary' size='inline' className='w-full justify-start'>
-          <ListChecks className='h-4 w-4 mr-2' />
-          Checklists
-        </Button>
-      </CardChecklistPopover>
-
-      <Button
-        variant='secondary' size='inline'
-        className='w-full justify-start'
-        onClick={onCopy}
-      >
-        <CopyIcon className='h-4 w-4 mr-2' />
-        Duplicate
-      </Button>
-      <DeleteConfirmation
-        message="Are you sure you want to delete this card?"
-        onConfirm={onDelete}
-      >
+      <div className='flex flex-col gap-2 max-h-[15vh] md:max-h-[50vh] overflow-y-auto'>
+        <CardDatesPopover card={data} boardId={boardId}>
+          <Button variant='secondary' size='inline' className='w-full justify-start'>
+            <Clock className='h-4 w-4 mr-2' />
+            Dates
+          </Button>
+        </CardDatesPopover>
+        <CardLabelPopover card={data}>
+          <Button variant='secondary' size='inline' className='w-full justify-start'>
+            <Tag className='h-4 w-4 mr-2' />
+            Labels
+          </Button>
+        </CardLabelPopover>
+        <CardChecklistPopover card={data}>
+          <Button variant='secondary' size='inline' className='w-full justify-start'>
+            <ListChecks className='h-4 w-4 mr-2' />
+            Checklists
+          </Button>
+        </CardChecklistPopover>
         <Button
           variant='secondary' size='inline'
           className='w-full justify-start'
+          onClick={onCopy}
         >
-          <Trash className='h-4 w-4 mr-2' />
-          Delete
+          <CopyIcon className='h-4 w-4 mr-2' />
+          Duplicate
         </Button>
-      </DeleteConfirmation>
+        <DeleteConfirmation
+          message="Are you sure you want to delete this card?"
+          onConfirm={onDelete}
+        >
+          <Button
+            variant='secondary' size='inline'
+            className='w-full justify-start'
+          >
+            <Trash className='h-4 w-4 mr-2' />
+            Delete
+          </Button>
+        </DeleteConfirmation>
+      </div>
     </div>
   )
 }
