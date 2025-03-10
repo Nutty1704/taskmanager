@@ -134,6 +134,51 @@
   @apply inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primaryDarker px-3  font-medium text-primary-foreground !shadow-none ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
 }
 
+.cl-navbar h1 {
+  @apply text-foreground;
+}
+
+.cl-tabButton span {
+  @apply border-muted-foreground hover:border-foreground
+}
+
+.cl-tableHead {
+  @apply text-muted-foreground
+}
+
+.cl-formattedDate {
+  @apply text-muted-foreground
+}
+
+.cl-selectButton, .cl-selectButton span {
+  @apply text-foreground
+}
+
+.cl-selectOptionsContainer {
+  @apply bg-secondary border-muted border
+}
+
+.cl-selectOption {
+  @apply bg-secondary hover:bg-background data-[focused='true']:bg-background
+}
+
+svg.cl-organizationSwitcherPopoverActionButtonIcon {
+  @apply text-foreground;
+  fill: currentColor
+}
+
+.cl-profileSectionPrimaryButton {
+  @apply text-muted-foreground hover:text-foreground
+}
+
+.cl-profileSectionPrimaryButton[data-color="danger"] {
+  @apply text-destructive hover:text-destructive/85
+}
+
+.cl-profileSectionPrimaryButton[data-localization-key='userProfile.start.dangerSection.deleteAccountButton'] {
+  @apply !text-destructive-foreground hover:!text-destructive-foreground
+}
+
 .cl-card,
 .cl-socialButtonsBlockButton,
 .cl-alert,
