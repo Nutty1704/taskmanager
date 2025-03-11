@@ -17,7 +17,7 @@ if (!PUBLISHABLE_KEY) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <ClerkProvider
           publishableKey={PUBLISHABLE_KEY}
           afterSignOutUrl='/'

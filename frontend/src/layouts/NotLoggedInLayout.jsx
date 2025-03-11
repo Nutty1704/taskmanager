@@ -5,9 +5,7 @@ const NotLoggedInLayout = ({ children }) => {
   return (
     <>
         <Navbar />
-        <main className='min-h-screen flex'>
-          {children}
-        </main>
+        {children}
     </>
   )
 }

@@ -42,5 +42,9 @@
 .invert-svg {
   filter: invert(1);
 }
-  
-  
+
+
+.marketing-card-gradient {
+  background: rgb(0,0,0);
+  background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(28,28,28,0.9192051820728291) 50%, rgba(0,212,255,0) 100%);
+}

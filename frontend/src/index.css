@@ -121,6 +121,9 @@
   }
 }
 
+.text-logo-gradient {
+  @apply bg-clip-text text-transparent bg-logo-gradient brightness-95
+}
 
 .bg-logo-gradient {
   @apply bg-gradient-to-tr from-[#f89937] to-[#fbd91f]
