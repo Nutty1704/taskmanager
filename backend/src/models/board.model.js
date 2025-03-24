@@ -30,7 +30,11 @@ const boardSchema = new mongoose.Schema({
     imageLinkHTML: {
         type: String,
         required: true
-    }
+    },
+    checkpoints: [{
+        checkpointId: { type: mongoose.Schema.Types.ObjectId, ref: 'Checkpoint' },
+        createdAt: { type: Date, required: true }
+    }]
 }, { timestamps: true });
 
 

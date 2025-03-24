@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from '@/components/ui/popover'
 import { MoreHorizontal, X } from 'lucide-react'
 import React from 'react'
-import DeleteBoardConfirmationModal from '../form/delete-board-confirmation-modal'
+import BoardActions from './BoardActions'
 
 const BoardOptions = ({ id, title }) => {
 
@@ -33,15 +33,8 @@ const BoardOptions = ({ id, title }) => {
                     </Button>
                 </PopoverClose>
 
+                <BoardActions id={id} title={title} />
 
-                <DeleteBoardConfirmationModal id={id} title={title}>
-                    <Button
-                        variant='ghost'
-                        className='rounded-none w-full h-auto p-2 px-5 justify-start poppins-regular text-sm text-destructive'
-                    >
-                        Delete this board
-                    </Button>
-                </DeleteBoardConfirmationModal>
             </PopoverContent>
         </Popover>
     )

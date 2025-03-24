@@ -1,7 +1,7 @@
 import React from 'react'
 import Info from '../components/ui/Info'
 import { Separator } from '@/components/ui/separator'
-import BoardList from '../components/ui/BoardList'
+import BoardList from '../components/boards/BoardList'
 
 const BoardsPage = () => {
 

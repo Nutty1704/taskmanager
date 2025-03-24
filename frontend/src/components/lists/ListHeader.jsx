@@ -138,4 +138,35 @@ const ListHeader = ({ data, onAddCard, isCollapsed, toggleCollapse }) => {
     )
 }
 
+
+ListHeader.Static = ({ data, isCollapsed, toggleCollapse }) => {
+    if (isCollapsed) {
+        return (
+            <div
+                className='pt-2 py-2 text-sm font-semibold flex flex-col gap-y-5 items-center justify-center'
+                onClick={toggleCollapse}
+            >
+                <Maximize2 size={16} />
+                <span className='text-md rotate-90 origin-center whitespace-nowrap'>
+                    {data.title}
+                </span>
+            </div>
+        )
+    }
+
+    return (
+        <div className='pt-2 px-2 text-sm font-semibold flex justify-between items-start gap-x-2'>
+            <div
+                className="w-full text-sm px-2.5 py-1 h-7 poppins-medium border-transparent"
+            >
+                {data.title}
+            </div>
+
+            <Button onClick={toggleCollapse} variant='ghost' size='sm'>
+                <Minimize2 size={16} />
+            </Button>
+        </div>
+    )
+}
+
 export default ListHeader

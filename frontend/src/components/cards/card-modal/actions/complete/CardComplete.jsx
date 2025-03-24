@@ -6,9 +6,9 @@ import ToolTip from '@/src/components/ui/ToolTip';
 import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const CardComplete = ({ data, boardId }) => {
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
-    const [ tooltipText, setTooltipText ] = useState('');
-    
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tooltipText, setTooltipText] = useState('');
+
     const { updateCard } = useCardAPI();
     const queryClient = useQueryClient();
     const { updateCard: updateCardLocal } = useCardStore();
@@ -16,7 +16,7 @@ const CardComplete = ({ data, boardId }) => {
     useEffect(() => {
         if (data.isComplete) setTooltipText('Mark Incomplete');
         else setTooltipText('Mark Complete');
-    }, [ data.isComplete ]);
+    }, [data.isComplete]);
 
     const onCheckedChange = async (checked) => {
         try {
@@ -45,17 +45,26 @@ const CardComplete = ({ data, boardId }) => {
         }
     }
 
-  return (
-    <ToolTip text={tooltipText}>
-        <Checkbox
-            checked={data.isComplete}
-            onCheckedChange={onCheckedChange}
-            className='w-4 h-4 rounded-full border-success data-[state=checked]:bg-success disabled:cursor-pointer'
-            checkClass='text-background h-3 w-3'
-            strokeWidth={3}
-            disabled={isSubmitting}
-        />
-    </ToolTip>
-  )
+    return (
+        <ToolTip text={tooltipText}>
+            <Checkbox
+                checked={data.isComplete}
+                onCheckedChange={onCheckedChange}
+                className='w-4 h-4 rounded-full border-success data-[state=checked]:bg-success disabled:cursor-pointer'
+                checkClass='text-background h-3 w-3'
+                strokeWidth={3}
+                disabled={isSubmitting}
+            />
+        </ToolTip>
+    )
 }
+
+CardComplete.Static = ({ data }) => (
+    <Checkbox
+        checked={data?.isComplete}
+        className='w-4 h-4 rounded-full border-success data-[state=checked]:bg-success disabled:cursor-pointer'
+        checkClass='text-background h-3 w-3'
+        strokeWidth={3}
+    />
+)
 export default CardComplete

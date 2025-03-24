@@ -8,6 +8,7 @@ import { connectDB } from './lib/db.js';
 import { initializeSocket } from './lib/socket.js'; // Import socket setup
 
 import boardRouter from './routes/board.route.js';
+import checkpointRouter from './routes/checkpoint.route.js';
 import listRouter from './routes/list.route.js';
 import cardRouter from './routes/card.route.js';
 import orgRouter from './routes/org.route.js';
@@ -41,6 +42,7 @@ initializeSocket(server);
 
 // Routes
 app.use('/api/board', isAuthenticated, boardRouter);
+app.use('/api/checkpoint', isAuthenticated, checkpointRouter);
 app.use('/api/list', isAuthenticated, listRouter);
 app.use('/api/card', isAuthenticated, cardRouter);
 app.use('/api/org', isAuthenticated, orgRouter);
