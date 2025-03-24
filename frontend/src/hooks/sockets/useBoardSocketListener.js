@@ -9,7 +9,7 @@ import useChecklistSocketListeners from "./useChecklistSocketListener";
 
 const useBoardSocketListeners = (boardId) => {
     const navigate = useNavigate();
-    const { removeBoard, setActive } = useBoardStore();
+    const { activeBoard, removeBoard, setActive } = useBoardStore();
 
     // Handles when a board is deleted
     const boardDeletedListener = useCallback(({ orgId }) => {
@@ -20,6 +20,11 @@ const useBoardSocketListeners = (boardId) => {
     const boardUpdatedListener = useCallback(({ board }) => {
         setActive(board);
     }, [setActive, boardId]);
+
+    const checkpointUpdatedListener = useCallback(({ checkpoints }) => {
+        console.log(checkpoints);
+        setActive({ ...activeBoard, checkpoints });
+    }, []);
 
     // Call individual socket listener hooks
     useCardSocketListeners(boardId);
@@ -33,11 +38,13 @@ const useBoardSocketListeners = (boardId) => {
         joinBoard(boardId);
         socket.on("boardDeleted", boardDeletedListener);
         socket.on("boardUpdated", boardUpdatedListener);
+        socket.on("checkpointUpdated", checkpointUpdatedListener);
 
         return () => {
             cleanupBoard(boardId);
             socket.off("boardDeleted", boardDeletedListener);
             socket.off("boardUpdated", boardUpdatedListener);
+            socket.off("checkpointUpdated", checkpointUpdatedListener);
         };
     }, [boardId, boardDeletedListener, boardUpdatedListener]);
 };

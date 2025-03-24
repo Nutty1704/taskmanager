@@ -13,59 +13,59 @@ import CardComplete from './actions/complete/CardComplete';
 import useCardAPI from '@/src/hooks/api/useCardAPI';
 
 const Header = ({ data }) => {
-    const [ title, setTitle ] = useState(data.title);
-    const { boardId } = useParams();
-    const formRef = useRef(null);
-    const { updateCard } = useCardAPI();
-    const { register, setValue, reset, handleSubmit, formState: { errors, isSubmitting }} = useForm({
-      resolver: zodResolver(cardSchema.pick({ title: true })),
-      defaultValues: {
-        title: data.title
+  const [title, setTitle] = useState(data.title);
+  const { boardId } = useParams();
+  const formRef = useRef(null);
+  const { updateCard } = useCardAPI();
+  const { register, setValue, reset, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+    resolver: zodResolver(cardSchema.pick({ title: true })),
+    defaultValues: {
+      title: data.title
+    }
+  });
+  const queryClient = useQueryClient();
+
+  // Update title whenever data.title changes
+  useEffect(() => {
+    setValue('title', data.title);
+  }, [data.title]);
+
+  const onBlur = () => {
+    formRef.current?.requestSubmit();
+  }
+
+  const onSubmit = async (formData) => {
+    try {
+      if (title === formData.title) return;
+
+      formData.boardId = boardId;
+      formData.listId = data.list_id;
+      formData.cardId = data._id;
+
+      const { success } = await updateCard(formData);
+
+      if (!success) {
+        toast.error('Failed to update card');
+      } else {
+        // No need to manually update data.title here
+        toast.success('Card renamed');
+        queryClient.invalidateQueries(['card-logs', data._id]);
       }
-    });
-    const queryClient = useQueryClient();
 
-    // Update title whenever data.title changes
-    useEffect(() => {
-      setValue('title', data.title);
-    }, [data.title]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-    const onBlur = () => {
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      reset();
+    } else if (e.key === 'Enter') {
       formRef.current?.requestSubmit();
     }
+  }
 
-    const onSubmit = async (formData) => {
-      try {
-        if (title === formData.title) return;
-
-        formData.boardId = boardId;
-        formData.listId = data.list_id;
-        formData.cardId = data._id;
-
-        const { success } = await updateCard(formData);
-
-        if (!success) {
-          toast.error('Failed to update card');
-        } else {
-          // No need to manually update data.title here
-          toast.success('Card renamed');
-          queryClient.invalidateQueries(['card-logs', data._id]);
-        }
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        reset();
-      } else if (e.key === 'Enter') {
-        formRef.current?.requestSubmit();
-      }
-    }
-
-    useEventListener('keydown', onKeyDown);
+  useEventListener('keydown', onKeyDown);
 
   return (
     <div className='flex items-start gap-x-3 w-full'>
@@ -74,17 +74,17 @@ const Header = ({ data }) => {
       </div>
       <div className="w-full">
         <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
-              <FormInput
-                  {...register('title')}
-                  id='title'
-                  name='title'
-                  placeholder='Enter card title...'
-                  onBlur={onBlur}
-                  errors={errors.title}
-                  isSubmitting={isSubmitting}
-                  className='font-semibold text-xl md:text-xl px-1 text-foreground bg-transparent border-transparent relative -left-1.5 w-[95%] focus-visible:bg-background focus-visible:border-input mb-0.5 truncate'
-              />
-            <button hidden type='submit'>Submit</button>
+          <FormInput
+            {...register('title')}
+            id='title'
+            name='title'
+            placeholder='Enter card title...'
+            onBlur={onBlur}
+            errors={errors.title}
+            isSubmitting={isSubmitting}
+            className='font-semibold text-xl md:text-xl px-1 text-foreground bg-transparent border-transparent relative -left-1.5 w-[95%] focus-visible:bg-background focus-visible:border-input mb-0.5 truncate'
+          />
+          <button hidden type='submit'>Submit</button>
         </form>
 
         <p className='text-sm text-muted-foreground font-normal'>
@@ -93,6 +93,27 @@ const Header = ({ data }) => {
       </div>
 
       <input hidden type='text' autoFocus />
+    </div>
+  )
+}
+
+Header.Static = ({ data }) => {
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <div className='mt-1.5'>
+        <CardComplete.Static data={data} />
+      </div>
+      <div className="w-full">
+          <div
+            className='font-semibold text-xl md:text-xl px-1 text-foreground bg-transparent border-transparent relative -left-1.5 w-[95%] focus-visible:bg-background focus-visible:border-input mb-0.5 truncate'
+          >
+            {data?.title}
+          </div>
+
+        <p className='text-sm text-muted-foreground font-normal'>
+          in list <span className='underline'>{data.list?.title}</span>
+        </p>
+      </div>
     </div>
   )
 }

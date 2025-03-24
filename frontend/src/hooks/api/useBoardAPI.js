@@ -81,6 +81,27 @@ const useBoardAPI = () => {
             return { success: response.data.success };
         });
 
+    const createCheckpoint = (id) => (
+        apiHandler(async () => {
+            const response = await apiClient.post(`/api/checkpoint`, { id });
+            return { success: response.data.success };
+        })
+    )
+
+    const deleteCheckpoint = (id) => (
+        apiHandler(async () => {
+            const response = await apiClient.delete(`/api/checkpoint/${id}`);
+            return { success: response.data.success };
+        })
+    )
+
+    const getCheckpoint = (id) => (
+        apiHandler(async () => {
+            const response = await apiClient.get(`/api/checkpoint?checkpointId=${id}`);
+            return { success: response.data.success, checkpoint: response.data.data };
+        })
+    )
+
     return {
         createBoard,
         getBoards,
@@ -89,7 +110,10 @@ const useBoardAPI = () => {
         deleteBoard,
         getBoardLabels,
         updateBoardLabel,
-        deleteBoardLabel
+        deleteBoardLabel,
+        createCheckpoint,
+        deleteCheckpoint,
+        getCheckpoint
     };
 };
 

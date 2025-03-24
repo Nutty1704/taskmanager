@@ -17,7 +17,7 @@ const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete, li
 
   const onCheckedChange = async (checked) => {
     setIsChecked(checked);
-    
+
     try {
       const { success } = await updateItem(boardId, listId, cardId, checklistId, item._id, item.text, checked);
 
@@ -73,6 +73,25 @@ const ChecklistItem = ({ item, checklistId, cardId, onComplete, onIncomplete, li
             <Trash2 className='h-4 w-4 text-muted-foreground' />
           </Button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+ChecklistItem.Static = ({ item }) => {
+  const isChecked = item.isCompleted;
+  return (
+    <div className='flex items-center gap-2'>
+      <Checkbox
+        className='w-4 h-4 rounded-full border-success data-[state=checked]:bg-success disabled:cursor-pointer'
+        checkClass='text-background h-3 w-3'
+        checked={isChecked}
+        strokeWidth={3}
+      />
+      <div className='w-full hover:cursor-pointer hover:bg-foreground/10 rounded-md py-1 px-2 group flex'>
+        <span className={`transition-all duration-200 ${isChecked && 'line-through text-muted-foreground'}`}>
+          {item.text}
+        </span>
       </div>
     </div>
   )

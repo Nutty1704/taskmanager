@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import DashboardNavbar from '../components/ui/DashboardNavbar';
-import BoardNavbar from '../components/ui/BoardNavbar';
+import BoardNavbar from '../components/boards/BoardNavbar';
 import CardModalProvider from '../components/cards/card-modal/CardModalProvider';
 import { QueryProvider } from '../lib/query-provider';
 import useBoardAPI from '../hooks/api/useBoardAPI';

@@ -13,6 +13,19 @@ const CardChecklistContainer = ({ checklists, ...props }) => {
   )
 }
 
+CardChecklistContainer.Static = ({ checklists }) => {
+  if (!checklists) return null;
+
+  console.log(checklists);
+  return (
+    <>
+      {checklists.map(checklist => (
+        <CardChecklist.Static key={checklist._id} checklist={checklist} />
+      ))}
+    </>
+  )
+}
+
 
 CardChecklistContainer.Skeleton = () => {
   return (

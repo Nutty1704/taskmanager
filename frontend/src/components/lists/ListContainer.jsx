@@ -129,4 +129,16 @@ const ListContainer = ({
     )
 }
 
+ListContainer.Static = ({ lists }) => (
+    <ol className='poppins-regular flex gap-x-3 h-full'>
+        {lists.map((list, index) => (
+            <ListItem.Static
+                key={list._id}
+                index={index}
+                data={list}
+            />
+        ))}
+    </ol>
+)
+
 export default ListContainer

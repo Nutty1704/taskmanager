@@ -131,6 +131,24 @@ const CardDescription = ({ data }) => {
     )
 }
 
+CardDescription.Static = ({ description }) => {
+    return (
+        <div className='flex items-start gap-x-3 w-full'>
+            <AlignLeft size={17} className='mt-0.5 text-foreground' />
+            <div className="w-full">
+                <p className='poppins-semibold text-foreground mb-2'>
+                    Description
+                </p>
+                <div
+                    className='poppins-medium min-h-[78px] text-foreground/80 bg-secondary text-sm py-3 px-3.5 rounded-md'
+                >
+                    {description || 'No description'}
+                </div>
+            </div>
+        </div >
+    )
+}
+
 CardDescription.Skeleton = () => {
     return (
         <div className="flex items-start gap-x-3 w-full">

@@ -20,6 +20,8 @@ import BoardLayout from './layouts/BoardLayout'
 import BoardPage from './pages/BoardPage'
 import NotFoundPage from './pages/404'
 import { ping } from './lib/socket'
+import CheckpointPage from './pages/CheckpointPage'
+import CheckpointLayout from './layouts/CheckpointLayout'
 
 const App = () => {
   const { userId, orgId } = useAuth();
@@ -113,6 +115,14 @@ const App = () => {
             <BoardLayout>
               <BoardPage />
             </BoardLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path='/checkpoint/:checkpointId' element={
+          <ProtectedRoute>
+            <CheckpointLayout>
+              <CheckpointPage />
+            </CheckpointLayout>
           </ProtectedRoute>
         } />
 
